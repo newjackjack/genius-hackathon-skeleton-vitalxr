@@ -1,0 +1,21 @@
+.cache/
+coverage/
+dist/*
+!dist/index.html
+!dist/pg_fetch.js
+!dist/pg_sections.js
+node_modules/
+*.log
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+#IDEs
+.vscode
+*.iml

@@ -1,0 +1,36 @@
+{
+  "rules": {
+    "import/prefer-default-export": "off",
+    "no-console": "off",
+    "no-restricted-syntax": "off",
+    "no-underscore-dangle": "off",
+    "react/jsx-filename-extension": "off",
+    "lines-between-class-members": ["error", "always", { "exceptAfterSingleLine": true }]
+  },
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "parser": "@babel/eslint-parser",
+  "parserOptions": {
+    "ecmaVersion": 2018,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "extends": ["airbnb",  "plugin:react/recommended", "plugin:react-hooks/recommended"],
+  "globals": {
+    "Atomics": "readonly",
+    "SharedArrayBuffer": "readonly"
+  },
+  "plugins": ["react", "flowtype"],
+  "settings": {
+    "react": {
+      "version": "17.0.2"
+    },
+    "flowtype": {
+      "onlyFilesWithFlowAnnotation": true
+    }
+  }
+}
