@@ -1,9 +1,3 @@
-/**
- * mini-script to optimise the speed of content loading (lighthose metrics).
- * 
- * concurrently fetch the initial cards payload,
- * while the main facet-chat.js bundle being downloaded.
- */
 function uuid() {
   return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, (c) =>
     (
@@ -13,17 +7,7 @@ function uuid() {
   );
 }
 
-function checkSessionCache() {
-  const currentURL = new URL(window.location.href);
-  const clearSession = currentURL.searchParams.get('clear_session');
-  if (clearSession === '1') {
-    window.localStorage.removeItem('GAMALON-visitorId');
-    window.sessionStorage.removeItem('GAMALON-sessionId');
-  }
-}
-
 function getSessionsIds() {
-  checkSessionCache();
   let visitorId = window.localStorage.getItem('GAMALON-visitorId');
   if (!visitorId) {
     visitorId = uuid();
@@ -44,51 +28,8 @@ function getSessionsIds() {
 
   const organization =  configData?.organizationId || 'valuepetsupplies'; // Set the organization
   const socketURL = configData?.socketURL || 'wss://facetchat.dev.gmln.io/ws'; // Set the socket URL
-  const server_behavior = configData?.serverBehavior ||  { use_cards: true, expand_single_product: true, fetch_provider: 'REST' }; // Set the server behavior
-  const fetch_provider = configData?.serverBehavior?.fetch_provider || 'REST';
+  const server_behavior = configData?.serverBehavior ||  { use_cards: true, expand_single_product: true }; // Set the server behavior
   const { visitorId, sessionId } = getSessionsIds();
-
-  function useSocket() {
-    let streamPayload = null;
-    const dispatchStreamEvent = () => {
-      if (streamPayload) {
-        window.dispatchEvent(
-          new CustomEvent('pg-stream-event', {
-            detail: { type: 'stream-initial-cards', payload: streamPayload },
-          })
-        );
-      }
-    }
-    const handleStreamEvent = (event) => {
-      if (event.detail.type === 'stream-stream-cards') {
-        dispatchStreamEvent();
-      }
-    };
-    window.addEventListener('pg-stream-event', handleStreamEvent);
-    
-    const webSocket = new WebSocket(`${socketURL}/feed/${organization}/${visitorId}/${sessionId}`);
-    const onSocketMessage = (event) => {
-      if (event.data) {
-        streamPayload = JSON.parse(event.data);
-        dispatchStreamEvent();
-        if (streamPayload?.feed_processing_finished === true) {
-          webSocket.close();
-        }
-      }
-    };
-    const onSocketOpen = () => {
-      webSocket.send(
-        JSON.stringify({
-          type: 'visitor_new_session',
-          id: uuid(),
-          current_url: window.location.href,
-          server_behavior,
-        })
-      );
-    };
-    webSocket.onmessage = onSocketMessage;
-    webSocket.onopen = onSocketOpen;
-  }
 
   function useREST() {
     let payload = null;
@@ -136,17 +77,6 @@ function getSessionsIds() {
       .then((cardPayload) => {
         if (cardPayload) {
           payload = cardPayload;
-          if (fetch_provider === 'backoff') {
-            payloadParsed = JSON.parse(cardPayload);
-            if (
-              payloadParsed &&
-              payloadParsed.cards?.length === 0 &&
-              payloadParsed.regenerate
-            ) {
-              useSocket();
-              return;
-            }
-          }
           window.dispatchEvent(
             new CustomEvent('pg-app-event', {
               detail: { type: 'set-initial-cards', payload },
@@ -158,11 +88,7 @@ function getSessionsIds() {
         console.error(error);
       });
   }
-  if (fetch_provider === 'socket') {
-    useSocket();
-  } else {
-    useREST();
-  }
+  useREST();
 })();
 
 function feedPaginationPG() {

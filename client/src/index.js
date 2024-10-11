@@ -2,10 +2,10 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 
-import { type Analytics, RealAnalytics } from './analytics';
-import App from './App';
 import type { AppConfig, DispatchCommand } from './entities';
+import { type Analytics, RealAnalytics } from './analytics';
 import { getDesignConfig, setStorageFlags } from './utils/stateUtils';
+import App from './App';
 
 // $FlowIgnore
 import './index.scss';
@@ -35,42 +35,6 @@ function renderApp() {
       />,
     );
   }
-}
-
-function appendPgStylesheet(styleId: string, styleStr: string) {
-  const styleNode = document.getElementById(styleId);
-  if (styleNode && styleNode.parentNode) {
-    styleNode.parentNode.removeChild(styleNode);
-  }
-  const styleSheet = document.createElement('style');
-  styleSheet.type = 'text/css';
-  styleSheet.setAttribute('id', styleId);
-  // $FlowIgnore
-  styleSheet.innerText = styleStr;
-  if (document.head) {
-    document.head.appendChild(styleSheet);
-  }
-}
-
-function updatePgStylesheet(styleId: string, styleStr: string) {
-  const styleNode = document.getElementById(styleId);
-  if (styleNode) {
-    // $FlowIgnore
-    styleNode.innerText = styleStr;
-  } else {
-    appendPgStylesheet(styleId, styleStr);
-  }
-}
-
-function setupPgStylePreviewBridge() {
-  window.addEventListener('message', (event) => {
-    if (event.data.type === 'PG_MERCH_SET_STYLES') {
-      const { payload } = event.data;
-      if (payload && payload.styles) {
-        updatePgStylesheet('pg-stylesheet-merchant', payload.styles);
-      }
-    }
-  });
 }
 
 if (!window.GAMALON) {
@@ -116,41 +80,16 @@ window.GAMALON.init = async (config: AppConfig): any => {
     } else {
       targetNode = config.container;
     }
-    if (targetNode) {
-      if (config.design?.container?.style) {
-        targetNode.setAttribute('style', config.design.container.style);
-      }
-    } else {
-      return;
-    }
   }
   if (!root) {
     root = createRoot(pgContainer);
   }
-  // Renders the React app
   if (targetNode) {
     targetNode.appendChild(pgContainer);
-    window.postMessage({ gamalon: { startedLoading: true } });
     renderApp();
-    analytics?.track('bot loaded', { timestamp: Date.now() });
-    if (config.design?.style?.global) {
-      appendPgStylesheet('pg-stylesheet-global', config.design.style.global);
-    }
-    if (config.design?.style?.merchant) {
-      appendPgStylesheet('pg-stylesheet-merchant', config.design.style.merchant);
-    }
-    if (config.design?.merchant?.mode === 'preview') {
-      setupPgStylePreviewBridge();
-    }
   }
 };
 
-/**
- * Un-renders the PG and returns all global state to its original values, just
- * like before window.GAMALON.init() was called. After this you should be able
- * to call window.GAMALON.init() again with any valid configuration, and have
- * it work just like it would have immediately after loading this program.
- */
 window.GAMALON.destroy = () => {
   if (root) {
     root.unmount();
@@ -162,29 +101,5 @@ window.GAMALON.destroy = () => {
     }
     root = null;
     window.GAMALON.pgInitialized = false;
-  }
-};
-
-window.GAMALON.dispatch = (command: DispatchCommand) => {
-  if (!window.GAMALON.pgInitialized) {
-    console.log('pg not initialized');
-    return;
-  }
-  if (command === 'open') {
-    pgContainer.dispatchEvent(
-      new CustomEvent('pg-app-event', {
-        detail: {
-          type: 'open-pg',
-        },
-      }),
-    );
-  } else if (command === 'close') {
-    pgContainer.dispatchEvent(
-      new CustomEvent('pg-app-event', {
-        detail: {
-          type: 'close-pg',
-        },
-      }),
-    );
   }
 };
