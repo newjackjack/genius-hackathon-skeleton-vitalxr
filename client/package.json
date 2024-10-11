@@ -19,11 +19,9 @@
     "core-js": "^3.32.0",
     "framer-motion": "^10.15.0",
     "immer": "^10.0.2",
-    "lodash": "^4.17.21",
-    "posthog-js": "^1.94.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-responsive-carousel": "^3.2.23",
+    "sass": "^1.79.5",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
@@ -45,7 +43,6 @@
     "eslint-plugin-react": "^7.33.1",
     "eslint-plugin-react-hooks": "^4.6.0",
     "flow-bin": "^0.213.1",
-    "node-sass": "^9.0.0",
     "react-refresh": "^0.14.0",
     "sass-loader": "^13.3.2",
     "style-loader": "^3.3.3",

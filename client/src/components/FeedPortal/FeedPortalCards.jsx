@@ -25,7 +25,6 @@ import {
   FeedProductDescriptionCard,
   FeedProductSummaryCard,
   FeedProductImageCard,
-  FeedProductImageCarouselCard,
   FeedVideoCard,
   FeedCouponCard,
   FeedProductVariantCard,
@@ -226,9 +225,6 @@ function FeedCards({
           }
           if (card.type === 'product_image_card') {
             return <FeedProductImageCard key={card.id} card={card} />;
-          }
-          if (card.type === 'product_image_carousel_card') {
-            return <FeedProductImageCarouselCard key={card.id} card={card} />;
           }
           if (card.type === 'video_card') {
             return <FeedVideoCard key={card.id} card={card} />;

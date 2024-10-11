@@ -10,13 +10,8 @@ import React, {
 } from 'react';
 import type { Node } from 'react';
 import { produce } from 'immer';
-import throttle from 'lodash/throttle';
 
-import {
-  trackIntersection,
-  trackPositionUpdate,
-  trackTouchEvent,
-} from './feedTrackerUtils';
+import { trackIntersection } from './feedTrackerUtils';
 import FeedMetricsController, { getMetricsEventPayload } from './feedTrackerMetrics';
 
 import { ConfigContext, DesignContext } from '../../context';
@@ -141,34 +136,6 @@ export function FeedCardTracker({
     },
     [removeTrackingRef, feedObserver],
   );
-
-  useLayoutEffect(() => {
-    const container = document.querySelector('.pg-portal-feed');
-    const handleFeedTouch = (event: TouchEvent) => {
-      trackTouchEvent({
-        event,
-        container,
-        feedTracker,
-      });
-    };
-    const handleFeedScroll = () => {
-      trackPositionUpdate({
-        container,
-        feedTracker,
-      });
-    };
-    if (container && enabled) {
-      container.onscroll = throttle(handleFeedScroll, 350);
-      container.addEventListener('touchstart', handleFeedTouch);
-      container.addEventListener('touchend', handleFeedTouch);
-    }
-    return () => {
-      if (container && enabled) {
-        container.removeEventListener('touchstart', handleFeedTouch);
-        container.removeEventListener('touchend', handleFeedTouch);
-      }
-    };
-  }, [enabled]);
 
   useLayoutEffect(() => () => {
     if (feedObserver) {

@@ -3,7 +3,6 @@ import FeedProductCard from './FeedProductCard/FeedProductCard';
 import FeedProductDescriptionCard from './FeedProductCard/FeedProductDescriptionCard';
 import FeedProductSummaryCard from './FeedProductCard/FeedProductSummaryCard';
 import FeedProductImageCard from './FeedProductCard/FeedProductImageCard';
-import FeedProductImageCarouselCard from './FeedProductCard/FeedProductImageCarouselCard';
 import FeedProductVariantCard from './FeedProductCard/FeedProductVariantCard';
 import FeedProductVariantPropCard from './FeedProductCard/FeedProductVariantPropCard';
 import FeedQuestionRevealCard from './FeedQuestionCard/FeedQuestionRevealCard';
@@ -38,7 +37,6 @@ export {
   FeedProductDescriptionCard,
   FeedProductSummaryCard,
   FeedProductImageCard,
-  FeedProductImageCarouselCard,
   FeedProductVariantCard,
   FeedProductVariantPropCard,
   FeedVideoCard,

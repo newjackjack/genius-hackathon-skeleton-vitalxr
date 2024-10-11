@@ -6,7 +6,6 @@ import { type Analytics, RealAnalytics } from './analytics';
 import App from './App';
 import type { AppConfig, DispatchCommand } from './entities';
 import { getDesignConfig, setStorageFlags } from './utils/stateUtils';
-import { SourceTracker } from './components/AppTracking/sourceTracker';
 
 // $FlowIgnore
 import './index.scss';
@@ -35,33 +34,6 @@ function renderApp() {
         serverBehavior={savedConfig.serverBehavior}
       />,
     );
-  }
-}
-
-function renderSourceTr() {
-  if (analytics && savedConfig) {
-    const designConfig = getDesignConfig(savedConfig);
-    if (
-      designConfig.tracking.source.enabled
-      && designConfig.tracking.source.rules.length !== 0
-    ) {
-      if (!root) {
-        const trContainer = document.createElement('div');
-        root = createRoot(trContainer);
-        if (document.body) {
-          document.body.appendChild(trContainer);
-        }
-      }
-      if (root && analytics) {
-        root.render(
-          <SourceTracker
-            enabled
-            rules={designConfig.tracking.source.rules}
-            analytics={analytics}
-          />,
-        );
-      }
-    }
   }
 }
 
@@ -124,37 +96,7 @@ window.GAMALON.init = async (config: AppConfig): any => {
   savedConfig = config;
   analytics = new RealAnalytics(config);
   await analytics.init();
-  if (!analytics?.appEnabled()) {
-    renderSourceTr();
-    return;
-  }
-  if (config.design?.allowedPagePatterns) {
-    const { allowedPagePatterns } = config.design;
-    if (allowedPagePatterns.length !== 0) {
-      const { pathname, search, hash } = window.location;
-      const urlTail = pathname + search + hash;
-      if (!allowedPagePatterns.some((pattern) => new RegExp(pattern).test(urlTail))) {
-        renderSourceTr();
-        return;
-      }
-    }
-  }
-  if (config.design?.pagePatterns) {
-    const { pagePatterns } = config.design;
-    if (pagePatterns.length > 0) {
-      const { pathname, search, hash } = window.location;
-      const urlTail = pathname + search + hash;
-      for (let i = 0; i < pagePatterns.length; i += 1) {
-        const { pattern, type } = pagePatterns[i];
-        if (new RegExp(pattern).test(urlTail)) {
-          if (type === 'exclude') {
-            renderSourceTr();
-            return;
-          }
-        }
-      }
-    }
-  }
+
   let targetNode: ?HTMLBodyElement | HTMLElement = document.body;
   if (config.container) {
     targetNode = null;
