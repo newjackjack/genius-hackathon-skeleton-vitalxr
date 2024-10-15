@@ -6,18 +6,18 @@ import { Analytics } from '../../analytics';
 import { getServerUrl } from '../utils';
 
 export class FeedCardController extends ChatController {
-  #socketUrlBase: string;
+  #serverUrlBase: string;
   #status: { state: string };
   pagination: { page: number, status: string, empty: boolean };
 
   constructor(
     organizationId: string,
-    socketUrlBase: string,
+    serverUrlBase: string,
     analytics: Analytics,
     serverBehavior: ?ServerBehavior,
   ) {
     super(organizationId, analytics, serverBehavior);
-    this.#socketUrlBase = socketUrlBase;
+    this.#serverUrlBase = serverUrlBase;
     this.#status = { state: 'initial' };
     this.pagination = { page: 1, status: 'loaded', empty: false };
     this.initFeedEvents();
@@ -25,7 +25,7 @@ export class FeedCardController extends ChatController {
 
   get serverURL(): string {
     return getServerUrl(
-      this.#socketUrlBase,
+      this.#serverUrlBase,
       this.organizationId,
       this.visitorId,
       this.sessionId,

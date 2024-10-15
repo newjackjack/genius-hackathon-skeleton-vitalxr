@@ -279,7 +279,7 @@ export const defaultContextConfig = {
   // $FlowIgnore
   analytics: new Analytics(),
   organizationId: '',
-  socketURL: '',
+  serverURL: '',
   serverBehavior: { expand_single_product: false, fetch_provider: 'REST' },
   flags: defaultDesign.flags,
 };
@@ -292,7 +292,7 @@ export function getContextConfigProps(
   return produce(defaultContextConfig, (draftState) => {
     draftState.serverBehavior = props.serverBehavior || draftState.serverBehavior;
     draftState.organizationId = props.organizationId || draftState.organizationId;
-    draftState.socketURL = props.socketURL || draftState.socketURL;
+    draftState.serverURL = props.serverURL || draftState.serverURL;
     draftState.analytics = props.analytics || draftState.analytics;
     draftState.flags = props.design.flags || draftState.flags;
   });

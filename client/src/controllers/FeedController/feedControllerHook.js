@@ -39,7 +39,7 @@ const getInitialState = (): AppFeedState => ({
 
 export type UseCardFeedControllerProps = {
   organizationId: string,
-  socketURL: string,
+  serverURL: string,
   analytics: Analytics,
   serverBehavior: ?ServerBehavior,
 };
@@ -56,7 +56,7 @@ export type UseCardFeedControllerReturn = {
  */
 export function useCardFeedController({
   organizationId,
-  socketURL,
+  serverURL,
   analytics,
   serverBehavior,
 }: UseCardFeedControllerProps): UseCardFeedControllerReturn {
@@ -123,7 +123,7 @@ export function useCardFeedController({
   const controller = useMemo(() => {
     const controllerInstance = new FeedCardController(
       organizationId,
-      socketURL,
+      serverURL,
       analytics,
       JSON.parse(serverBehaviorJson),
     );
@@ -131,7 +131,7 @@ export function useCardFeedController({
     return controllerInstance;
   }, [
     organizationId,
-    socketURL,
+    serverURL,
     initControllerCallbacks,
     serverBehaviorJson,
     analytics,

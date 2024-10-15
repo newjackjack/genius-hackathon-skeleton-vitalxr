@@ -72,7 +72,6 @@ export class ChatController {
   #organizationId: string;
   #callbacks: ChatControllerCallbacks;
   #serverBehavior: ?ServerBehavior;
-  #socketURL: string;
   #serverURL: string;
   // "Protected" properties
   _analytics: any;
@@ -137,12 +136,8 @@ export class ChatController {
    */
   cancel() {}
 
-  get socketURL(): string {
-    return this.#socketURL;
-  }
-
   get serverURL(): string {
-    return this.serverURL;
+    return this.#serverURL;
   }
 
   get organizationId(): string {

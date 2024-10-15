@@ -28,7 +28,7 @@ function renderApp() {
     root.render(
       <App
         organizationId={savedConfig.organizationId}
-        socketURL={savedConfig.socketURL}
+        serverURL={savedConfig.serverURL}
         design={designConfig}
         analytics={analytics}
         serverBehavior={savedConfig.serverBehavior}

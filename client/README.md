@@ -19,7 +19,7 @@ You should preferably have [Node](https://nodejs.org/en/) `16.14.0` LTS or later
 ```
 GAMALON.init({
   organizationId: : "{organizationId}",
-  socketURL: "{socketURL}",
+  serverURL: "{serverURL}",
 });
 ```
 * To run the bundle app: run `serve -s dist` (make sure we already have the app built in `/dist` folder, if not run the `npm run build:dev` or `npm run build:prod`command)
