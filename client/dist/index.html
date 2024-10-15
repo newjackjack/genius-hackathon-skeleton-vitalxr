@@ -27,23 +27,14 @@
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="pg-app-wrapper"></div>
   </body>
-  <script>
-    window.localStorage.setItem('GAMALON-pg-template-config', JSON.stringify({
-      container: '#pg-app-wrapper',
-      organizationId: "valuepetsupplies",
-      socketURL: "wss://facetchat.dev.gmln.io/ws",
-      serverBehavior: { use_cards: true },
-      analytics: { disableAll: true }
-    }));
-  </script>
-  <script async src="pg_fetch.js"></script>
   <script src="facet-chat.js"></script>
   <script>
-    window.addEventListener("load", () => {
-      const config = window.localStorage.getItem('GAMALON-pg-template-config');
-      if (config) {
-        GAMALON.init(JSON.parse(config));
-      }
+    GAMALON.init({
+      container: '#pg-app-wrapper',
+      organizationId: 'valuepetsupplies',
+      socketURL: 'wss://facetchat.dev.gmln.io/ws',
+      serverBehavior: { use_cards: true },
+      analytics: { disableAll: true },
     });
   </script>
 </html>

@@ -76,11 +76,7 @@ export class ChatController {
   #serverURL: string;
   // "Protected" properties
   _analytics: any;
-  pagination: {
-    enabled: boolean,
-    step: number,
-    offset: number,
-  };
+  pagination: { page: number, status: string, empty: boolean };
 
   /**
    * Abstract method to send a message over the channel. Subclassed
@@ -131,11 +127,7 @@ export class ChatController {
     };
     this.#serverBehavior = serverBehavior;
     this._analytics = analytics;
-    this.pagination = {
-      enabled: false,
-      step: 5,
-      offset: 5,
-    };
+    this.pagination = { page: 1, status: 'loaded', empty: false };
   }
 
   /**

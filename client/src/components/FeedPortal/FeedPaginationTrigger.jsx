@@ -22,7 +22,7 @@ export default function FeedPaginationTrigger({
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
               window.dispatchEvent(
-                new CustomEvent('pg-pagination-event', {
+                new CustomEvent('pg-feed-event', {
                   detail: { type: 'pg-next-page' },
                 }),
               );
