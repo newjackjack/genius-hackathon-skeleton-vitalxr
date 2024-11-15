@@ -10,7 +10,7 @@ Front-end app for [FacetChat](https://github.com/gamalon/facetchat) created via 
 ### Run the client
 
 * To run the local instance: `npm start`
-* The configuration can be set under `/diest/index.html`:
+* The configuration can be set under `/dist/index.html`:
 ```
   GAMALON.init({
     container: '#pg-app-wrapper',                // Feed mounting container selector
