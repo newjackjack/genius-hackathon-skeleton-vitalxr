@@ -17,10 +17,13 @@
   --pg-color-bk-feed-card-content: #eee;
   // -> colors
   --pg-color-text: #000000;
+  --pg-color-content-dark: #000000;
+  --pg-color-content-light: #ffffff;
   --pg-color-banner-text: #000000;
   --pg-color-text-alt: #ffffff;
   --pg-color-btn: var(--pg-color-text);
   --pg-color-btn-cart: var(--pg-color-text);
+  --pg-color-btn-reorder: var(--pg-color-text);
   --pg-color-btn-alt: var(--pg-color-text);
   --pg-color-card-price: #b50000;
   --pg-color-card-shipping: #ff0000;
@@ -32,7 +35,7 @@
   --pg-color-card-subtitle: var(--pg-color-text);
   --pg-color-card-qa-text: var(--pg-color-text);
   --pg-color-rating: #f58a15;
-  
+
   /* ------- APP LAYOUT ------- */
   --pg-grid-col-feed: 2;
   --pg-grid-card-1x1-feed: span 1;
@@ -40,11 +43,11 @@
   --pg-grid-card-full-w-feed: 1/-1;
   --pg-flex-align-card-product: left;
   --pg-flex-align-banner-content: center;
-  --pg-order-card-price: 0;
   --pg-order-card-variant: 1;
   --pg-order-card-title: 2;
   --pg-order-card-subtitle: 3;
   --pg-order-card-rating: 3;
+  --pg-order-card-price: 4;
   --pg-order-card-vendor: 4;
   // card options
   --pg-order-card-shipping: 0;
@@ -62,8 +65,12 @@
   --pg-padding-feed-banner-content: 20px;
   --pg-padding-card: 0px;
   --pg-padding-card-content: 5px;
+  --pg-padding-content: 20px;
+  --pg-padding-divider-m: 10px;
+  --pg-padding-divider-l: 20px;
   --pg-padding-card-details: 8px;
   --pg-padding-card-content-text: 10px;
+  --pg-padding-card-content-title: 12px;
   --pg-padding-filter: 10px;
   --pg-padding-filter-title: 12px 0px 12px 0px;
   --pg-padding-filter-link: 0px 0px 4px 0px;
@@ -76,28 +83,34 @@
 
   /* ------- APP BORDERS ------- */
   --pg-border-card: unset;
+  --pg-border-card-content: unset;
   --pg-border-radius-btn: 2px;
   --pg-border-radius-card: 2px;
   --pg-border-radius-app: 0px;
   --pg-border-radius-feed-banner-content: 0px;
   --pg-border-radius-banner: 14px 14px 0px 0px;
   --pg-border-radius-modal: 14px 14px 0px 0px;
-  
+
   /* ------- APP SIZING ------- */
   --pg-height-app-input: 32px;
   --pg-height-card-image-m: 200px;
-  --pg-height-min-feed: 150px;
+  --pg-height-min-feed: 0px;
   --pg-height-feed-banner: 200px;
   --pg-width-mini-cards: 330px;
-  --pg-width-feed: 100%;
-  --pg-width-max-feed: auto;
+  --pg-width-card: 100%;
+  --pg-width-max-card: auto;
+  --pg-aspect-ratio-card: auto;
+  --pg-aspect-ratio-card-vertical: auto;
+  --pg-aspect-ratio-card-horizontal: auto;
+  --pg-width-app: 100%;
+  --pg-width-feed: 92%;
+  --pg-width-max-feed: 92%;
+  --pg-width-filter: 150px;
   --pg-width-max-feed-filters: 250px;
   --pg-object-fit-image: contain;
-  --pg-width-app: 100%;
-  --pg-width-filter: 150px;
   --pg-position-app: absolute;
   --pg-font-size-rating: 14px;
-  
+
   /* ------- APP FONTS ------- */
   --pg-font-app: Arial, Helvetica, sans-serif;
   --pg-font-xs: normal 400 12px/14px var(--pg-font-app);
@@ -106,18 +119,18 @@
   --pg-font-l: normal 500 16px/18px var(--pg-font-app);
   --pg-font-xl: normal 500 18px/20px var(--pg-font-app);
   --pg-font-xxl: normal 600 24px/26px var(--pg-font-app);
+  --pg-font-content-m: normal 400 16px/20px var(--pg-font-app);
+  --pg-font-content-l: normal 400 18px/22px var(--pg-font-app);
   --pg-font-card-price: var(--pg-font-s);
   --pg-font-card-title: var(--pg-font-s);
   --pg-font-card-subtitle: var(--pg-font-s);
   --pg-font-card-vendor: var(--pg-font-xs);
   --pg-font-card-shipping: var(--pg-font-s);
-  --pg-font-card-facet-title: var(--pg-font-s);
   --pg-font-feed-filter-prefix: var(--pg-font-m);
   --pg-font-feed-filter-title: var(--pg-font-xl);
   --pg-font-feed-filter-link: var(--pg-font-m);
   --pg-font-feed-banner-title: var(--pg-font-xxl);
   --pg-font-feed-banner-description: var(--pg-font-m);
-
 
   /* ------- APP CONTENT ------- */
   --pg-content-filter-title: none;
@@ -130,4 +143,19 @@
   --pg-content-card-review: 'review';
   --pg-content-card-review-multi: 'reviews';
   --pg-content-feed-sort-title-prefix: none;
+
+  /* ------- ZIG-ZAG ------- */
+  --pg-zig-zag-line-h: 30%;
+  --pg-zig-line-color: #0BB4FC;
+  --pg-zag-line-color: #0BB4FC;
+  --pg-zig-line-size: 1px;
+  --pg-zag-line-size: 2px;
+
+  /* ----- STORY CARDS ----- */
+  --pg-story-padding: 20px;
+  --pg-story-border: none;
+  --pg-story-border-radius: 0px;
+  --pg-story-color: #000000;
+  --pg-story-img-horiz-h: 350px;
+  --pg-story-img-vert-w: 350px;
 }
