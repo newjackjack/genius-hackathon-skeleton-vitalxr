@@ -144,7 +144,7 @@ function AppOverlayCart({
         >
           {lingerCards.map((card) => {
             if (card.type === 'question_answer_default_card') {
-              return <FeedQuestionCardDefault key={card.id} card={card} />;
+              return <FeedQuestionCardDefault key={card.render_key} card={card} />;
             }
             return null;
           })}

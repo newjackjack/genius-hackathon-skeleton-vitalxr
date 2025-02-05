@@ -1,11 +1,11 @@
+/* eslint-disable react/no-danger */
 // @flow
 import React from 'react';
 import type { Node } from 'react';
 
 import type { QuestionCardDefault } from '../../../entities';
 import { CardSpace, CardWrapper } from '../CardComponents';
-
-import QuestionIcon from '../../../assets/icons/pg-q-icon-round.svg';
+import { AppDivider, AppText } from '../../AppComponents';
 
 type FeedQuestionCardDefaultProps = {
   card: QuestionCardDefault,
@@ -14,7 +14,6 @@ type FeedQuestionCardDefaultProps = {
 function FeedQuestionCardDefault({ card }: FeedQuestionCardDefaultProps): Node {
   return (
     <CardWrapper
-      style={{ overflow: 'hidden' }}
       card={card}
       size="auto"
       grid={card.layout_state || '1x1'}
@@ -23,53 +22,16 @@ function FeedQuestionCardDefault({ card }: FeedQuestionCardDefaultProps): Node {
         selector="pg-question-card-1x2-default"
         type="vertical-full"
         style={{
-          padding: 18,
-          backgroundColor: 'var(--pg-color-bk-feed-card-qa)',
+          padding: 'var(--pg-padding-content)',
         }}
       >
-        <div
-          data-selector="pg-question-card-1x2-title"
-          style={{
-            color: '#000000',
-            font: 'var(--pg-font-s)',
-            fontWeight: 600,
-            paddingBottom: 14,
-          }}
-        >
-          <QuestionIcon
-            style={{
-              marginRight: 6,
-              flexShrink: 0,
-              top: 4,
-              position: 'relative',
-            }}
-          />
-          {card.title || 'Customer questions'}
-        </div>
-        <div
-          data-selector="pg-question-card-1x2-question"
-          style={{
-            color: '#000000',
-            font: 'var(--pg-font-m)',
-            fontWeight: 500,
-            paddingBottom: 12,
-          }}
-        >
+        <AppText bold size="l">
           {card.question}
-        </div>
-        <div
-          data-selector="pg-question-card-1x2-answer"
-          style={{
-            color: 'var(--pg-color-card-qa-text)',
-            font: 'var(--pg-font-m)',
-            padding: 'var(--pg-padding-card-content-text)',
-            background: 'var(--pg-color-bk-feed-card-content)',
-            borderRadius: 4,
-            height: '100%',
-          }}
-          // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{ __html: card.answer }}
-        />
+        </AppText>
+        <AppDivider size="l" color="dark" />
+        <AppText size="m">
+          <div dangerouslySetInnerHTML={{ __html: card.answer }} />
+        </AppText>
       </CardSpace>
     </CardWrapper>
   );

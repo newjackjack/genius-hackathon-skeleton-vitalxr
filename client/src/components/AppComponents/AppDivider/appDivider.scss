@@ -1,0 +1,26 @@
+.pg-app-divider {
+  position: relative;
+  &[data-size='m'] {
+    padding: var(--pg-padding-divider-m);
+  }
+  &[data-size='l'] {
+    padding: var(--pg-padding-divider-l);
+  }
+  &[data-color='dark']::after {
+    background-color: var(--pg-color-content-dark) !important;
+  }
+  &[data-color='light']::after {
+    background-color: var(--pg-color-content-light) !important;
+  }
+  &::after {
+    content: '';
+    display: block;
+    clear: both;
+    position: absolute;
+    top: calc(50% - 1px);
+    left: 0;
+    width: 100%;
+    height: 1px;
+    opacity: 0.5;
+  }
+}

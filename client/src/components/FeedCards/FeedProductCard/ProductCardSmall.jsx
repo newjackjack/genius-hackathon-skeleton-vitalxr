@@ -104,6 +104,18 @@ function ProductCardSmall({
         />,
       );
     }
+    if (attrs.badge_text) {
+      const pos = postions.shift();
+      badges.push(
+        <div
+          key="generic"
+          className="pg-card-product-badge"
+          style={{ ...pos }}
+        >
+          {attrs.badge_text}
+        </div>,
+      );
+    }
     if (badges.length > 0) {
       return badges;
     }
@@ -138,7 +150,6 @@ function ProductCardSmall({
   return (
     <m.div
       ref={cardRef}
-      id={card.id}
       type="1x1"
       className={getProductClassName(recType)}
       onClick={() => {

@@ -1079,7 +1079,7 @@ export type AppGridConfig = {
 
 export type AppConfig = {
   organizationId: string,
-  socketURL: string,
+  serverURL: string,
   enabled: boolean,
   experiment?: string, // PostHog experiment name
   experiments?: Array<ExperimentConfig>,
@@ -1339,7 +1339,7 @@ export type AppDesignProps = {
 
 export type AppProps = {|
   organizationId: string,
-  socketURL: string,
+  serverURL: string,
   design: AppDesignProps,
   analytics: Analytics,
   serverBehavior?: ServerBehavior,
@@ -1347,7 +1347,7 @@ export type AppProps = {|
 
 export type ContextConfigProps = {|
   organizationId: string,
-  socketURL: string,
+  serverURL: string,
   analytics: Analytics,
   flags: AppConfigFlags,
   serverBehavior: ServerBehavior,

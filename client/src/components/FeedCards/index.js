@@ -22,6 +22,7 @@ import FeedBannerCard from './FeedBannerCard/FeedBannerCard';
 import FeedMerchVideoCard from './FeedMerchVideoCard/FeedMerchVideoCard';
 import FeedMerchQaCard from './FeedMerchQaCard/FeedMerchQaCard';
 import FeedMerchReviewCard from './FeedMerchReviewCard/FeedMerchReviewCard';
+import FeedStoryCard from './FeedStoryCard/FeedStoryCard';
 
 export {
   FeedProductCard,
@@ -47,4 +48,5 @@ export {
   FeedMerchVideoCard,
   FeedMerchQaCard,
   FeedMerchReviewCard,
+  FeedStoryCard,
 };

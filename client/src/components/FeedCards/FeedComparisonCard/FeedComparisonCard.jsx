@@ -38,6 +38,7 @@ function FeedComparisonCard({
               key={product.variant_id}
               card={{
                 id: card.id,
+                render_key: card.render_key,
                 product,
                 product_type: '',
                 source_id: card.source_id,
@@ -65,7 +66,6 @@ function FeedComparisonCard({
       card={card}
       size="auto"
       grid="1x2"
-      style={{ overflow: 'hidden' }}
     >
       <CardSpace style={{ backgroundColor: '#F2F2F2' }}>
         {card.comparison_info.card_title && (

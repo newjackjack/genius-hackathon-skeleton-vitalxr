@@ -80,7 +80,7 @@ function FeedEmbeddedFilters({
             return (
               <FeedFacetCard
                 group
-                key={card.id}
+                key={card.render_key}
                 card={card}
                 onFacetSelect={onFacetSelect}
               />

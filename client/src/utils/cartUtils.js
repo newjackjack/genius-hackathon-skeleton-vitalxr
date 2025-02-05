@@ -2,6 +2,9 @@
 import { getProductAttributes, openTargetURL } from './componentUtils';
 import * as cartCallbacks from './cartCallbacks';
 import type { ChatController } from '../ChatController';
+import safeLocalStorage from './safeLocalStorage';
+import addToShopifyPDPCart from './cartPDP';
+
 import type {
   Product,
   CartDataPG,
@@ -11,7 +14,6 @@ import type {
   CartFlowAction,
   AppLanguage,
 } from '../entities';
-import safeLocalStorage from './safeLocalStorage';
 
 const cartTrackingMessageMapping = {
   add_to_cart: 'product added to cart',
@@ -108,6 +110,7 @@ export async function addShopifyCartItem(
   variantId: number,
   subscription?: string | null,
   sections?: string,
+  type: string,
 ): Promise<any> {
   try {
     const payloadItem = {
@@ -128,6 +131,17 @@ export async function addShopifyCartItem(
       items: [payloadItem],
       sections: payloadSections,
     };
+    if (type === 'form') {
+      const formData = new FormData();
+      formData.append('id', `${variantId}`);
+      if (payload.sections) {
+        formData.append('sections', payload.sections);
+      }
+      return await fetch(`${window.Shopify.routes.root}cart/add.js`, {
+        method: 'POST',
+        body: formData,
+      }).then((response) => response.json());
+    }
     return await fetch(`${window.Shopify.routes.root}cart/add.js`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -135,6 +149,22 @@ export async function addShopifyCartItem(
     }).then((response) => response.json());
   } catch (error) {
     console.error(error);
+  }
+  return null;
+}
+
+function getCartResponseItem(response: any) {
+  if (response) {
+    if (response.items) {
+      const [item] = response.items;
+      if (item && response.sections) {
+        item.sections = response.sections;
+      }
+      return item;
+    }
+    if (response.handle) {
+      return response;
+    }
   }
   return null;
 }
@@ -272,22 +302,66 @@ function getSubscriontData(product: Product): ?string {
   return null;
 }
 
+function isShopifyPDP(): boolean {
+  return (
+    window.location.pathname.includes('/products/') && window.Shopify?.shop
+  );
+}
+
 export const onCallToActionCart = async (
   controller: ChatController,
   action: CallToAction,
 ) => {
   if (action.type === 'add_to_cart') {
+    const {
+      type,
+      cartPDP,
+      callback,
+      cartFlow,
+      sections,
+      sectionExtractor,
+      sectionConfig,
+    } = JSON.parse(safeLocalStorage.getItem('GAMALON-pg-cart-config') || '{}');
     try {
-      const {
-        type,
-        callback,
-        cartFlow,
-        sections,
-        sectionExtractor,
-      } = JSON.parse(safeLocalStorage.getItem('GAMALON-pg-cart-config') || '{}');
-      let sectionsInput = sections;
+      if (!window.Shopify?.routes?.root || type === 'open-url') {
+        addToCartOpenURL(controller, action.product);
+        return;
+      }
 
-      if (type === 'external' && cartFlow) {
+      if (cartPDP?.enabled && isShopifyPDP()) {
+        await addToShopifyPDPCart(action.product.product_id, action.product.variant_id);
+        return;
+      }
+
+      controller.callbacks.loading(true);
+      let sectionsInput = sections;
+      const subscription = getSubscriontData(action.product);
+      if (sectionExtractor?.selector && sectionExtractor?.attribute) {
+        const element = document.querySelector(sectionExtractor.selector);
+        if (element) {
+          const sectionId = element.getAttribute(sectionExtractor.attribute);
+          if (sectionId) {
+            sectionsInput = sectionId;
+          }
+        }
+      }
+      const response = await addShopifyCartItem(
+        action.product.variant_id,
+        subscription,
+        sectionsInput,
+        type,
+      );
+      const cartItem = getCartResponseItem(response);
+      if (cartItem) {
+        if (callback && cartCallbacks[callback]) {
+          await cartCallbacks[callback](cartItem, sectionConfig);
+        }
+        updateCartState(controller, action);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      if (cartFlow) {
         cartFlow.forEach((step: CartFlowAction) => {
           if (step.type === 'node_set') {
             const node = document.querySelector(step.selector);
@@ -305,51 +379,7 @@ export const onCallToActionCart = async (
             }
           }
         });
-        return;
       }
-
-      if (type === 'internal') {
-        updateCartStorage(controller, action);
-        updateCartState(controller, action);
-        return;
-      }
-
-      // Open the product details page if there is no Shopify instance
-      // or the cart strategy type is "open-url".
-      if (!window.Shopify?.routes?.root || type === 'open-url') {
-        addToCartOpenURL(controller, action.product);
-        return;
-      }
-
-      controller.callbacks.loading(true);
-      const subscription = getSubscriontData(action.product);
-      if (sectionExtractor?.selector && sectionExtractor?.attribute) {
-        const element = document.querySelector(sectionExtractor.selector);
-        if (element) {
-          const sectionId = element.getAttribute(sectionExtractor.attribute);
-          if (sectionId) {
-            sectionsInput = sectionId;
-          }
-        }
-      }
-      const response = await addShopifyCartItem(
-        action.product.variant_id,
-        subscription,
-        sectionsInput,
-      );
-      if (response && response.items) {
-        const [item] = response.items;
-        if (item && response.sections) {
-          item.sections = response.sections;
-        }
-        if (callback && cartCallbacks[callback]) {
-          await cartCallbacks[callback](item);
-        }
-        updateCartState(controller, action);
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
       controller.callbacks.loading(false);
     }
   } else if (
@@ -381,6 +411,7 @@ export function applyCouponURL(
         description: config?.description || 'URL discount coupon',
         discount: config?.discount || 15,
         banner: config?.banner || '',
+        render_key: config?.render_key || '',
       },
     });
   }

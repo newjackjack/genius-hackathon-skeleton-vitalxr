@@ -69,13 +69,15 @@ function useIntersectionObserver(
   }
   const intersectionCallback = (entries: Array<IntersectionObserverEntry>) => {
     feedMetricsController.trackIntersectionEntries(entries);
-    entries.forEach((entry) => {
-      trackIntersection({
-        intersection: entry,
-        feedTracker,
-        thresholds,
+    if (!metrics.enabled) {
+      entries.forEach((entry) => {
+        trackIntersection({
+          intersection: entry,
+          feedTracker,
+          thresholds,
+        });
       });
-    });
+    }
   };
 
   const feedObserver = new IntersectionObserver(intersectionCallback, {
@@ -124,14 +126,14 @@ export function FeedCardTracker({
     (card: FeedCard, element: HTMLElement | null) => {
       const { feedTargets } = feedTracker.current;
       if (element) {
-        if (!feedTargets.has(card.id)) {
-          feedTargets.set(card.id, { element, card });
+        if (!feedTargets.has(card.render_key)) {
+          feedTargets.set(card.render_key, { element, card });
           if (feedObserver) {
             feedObserver.observe(element);
           }
         }
       } else {
-        removeTrackingRef(card.id);
+        removeTrackingRef(card.render_key);
       }
     },
     [removeTrackingRef, feedObserver],
@@ -258,7 +260,7 @@ export function toggleVideoPlayState({
   volume: number,
   key: string,
   iframe: HTMLIFrameElement | null,
-  func: 'playVideo' | 'pauseVideo',
+  func: 'playVideo' | 'pauseVideo' | 'toggle',
 }) {
   if (key && iframe && iframe.contentWindow) {
     iframe.contentWindow.postMessage(
