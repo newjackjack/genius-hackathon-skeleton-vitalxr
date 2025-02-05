@@ -174,6 +174,7 @@ type MetricsEventPayload = {
     time: number | string,
     enter_count: number,
     product_recommendation_type?: string,
+    related_card_id?: string,
     product?: {
       handle: string,
       product_id: number | string,
@@ -206,6 +207,7 @@ export function getMetricsEventPayload(
         type: entry.card.type,
         enter_count: viewportEnterCount,
         product_recommendation_type: entry.card.product_recommendation_type,
+        related_card_id: entry.card.related_card_id,
       };
       if (entry.card.type === 'product_detail_card' && entry.card.product) {
         payload[key].product = {

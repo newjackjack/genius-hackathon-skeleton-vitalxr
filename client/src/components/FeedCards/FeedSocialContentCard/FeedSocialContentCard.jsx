@@ -45,7 +45,7 @@ function FeedSocialContentCard({ card }: FeedSocialContentCardProps): Node {
       >
         <CardSpace type="vertical-full">
           <iframe
-            title={card.id}
+            title={card.render_key}
             src={card.image_url}
             width="100%"
             height="100%"

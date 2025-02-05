@@ -2,7 +2,11 @@
 /* eslint-disable guard-for-in */
 // @flow
 import safeLocalStorage from './safeLocalStorage';
-import type { CallbackNodeConfig, CartFlowAction } from '../entities';
+import type {
+  CallbackNodeConfig,
+  CartFlowAction,
+  SectionConfig,
+} from '../entities';
 
 export async function getShopifyCartData(): Promise<any> {
   try {
@@ -22,10 +26,6 @@ type UpdateSections = {
   sections: { [string]: string }
 }
 
-// Manually updates the VPS mini-cart content:
-// This is a modified implementation of window.usi_app.add_item_minicart
-// since the original method has a bug where if the cart is empty it fails
-// to locate the ".mini-cart__inner" class element.
 async function updateVPScart(payload: UpdateSections) {
   try {
     for (const sectionKey in payload.sections) {
@@ -59,8 +59,9 @@ async function updateVPScart(payload: UpdateSections) {
 
 async function updateLBYcart() {
   function updateInlineContent(newContent: HTMLDivElement) {
+    const currentCartEl = newContent.querySelector('#sidebar-cart');
     // $FlowIgnore
-    const currentCartData = newContent.firstChild?.getAttribute(
+    const currentCartData = currentCartEl?.getAttribute(
       'data-section-settings',
     );
     if (currentCartData) {
@@ -103,25 +104,6 @@ async function updateLBYcart() {
         const cartNode = document.querySelector(
           'a[href="/cart"][data-action="open-drawer"]',
         );
-        if (cartNode) {
-          cartNode.click();
-        }
-      }
-    };
-    request.send();
-  } catch (error) {
-    console.error(error);
-  }
-}
-
-async function updateScentChipsCart() {
-  try {
-    const request = new XMLHttpRequest();
-    request.open('GET', '/cart?view=ajax');
-    request.setRequestHeader('Content-type', 'application/json');
-    request.onreadystatechange = () => {
-      if (request.readyState === 4 && request.responseText) {
-        const cartNode = document.querySelector('.js-mini-cart-trigger');
         if (cartNode) {
           cartNode.click();
         }
@@ -182,17 +164,6 @@ async function updateCartNode() {
   }
 }
 
-async function updateBaileysCbdCart() {
-  try {
-    const cartNode = document.querySelector('#cart-count');
-    if (cartNode) {
-      cartNode.click();
-    }
-  } catch (error) {
-    console.error(error);
-  }
-}
-
 async function updateLeatherNeckCart() {
   if (window.SLIDECART_UPDATE) {
     window.SLIDECART_UPDATE();
@@ -244,7 +215,7 @@ function findSectionNodes(node: HTMLElement) {
   return result;
 }
 
-async function updateCartSections(payload: UpdateSections) {
+async function updateCartSections(payload: UpdateSections, sectionConfig: SectionConfig) {
   if (!payload || !payload.sections) {
     return;
   }
@@ -253,7 +224,11 @@ async function updateCartSections(payload: UpdateSections) {
     node.innerHTML = payload.sections[sectionKey];
     const { target, source } = findSectionNodes(node);
     if (target && source) {
-      target.innerHTML = source.innerHTML;
+      if (sectionConfig?.type === 'outer') {
+        target.outerHTML = source.outerHTML;
+      } else {
+        target.innerHTML = source.innerHTML;
+      }
     }
   }
 }
@@ -317,16 +292,144 @@ async function updateRidgeCart() {
   }
 }
 
+function getDocumentZone(sectionId: string) {
+  let documentZone = document.querySelector(`#${sectionId}`);
+  if (!documentZone) {
+    documentZone = document.querySelector(`#shopify-section-${sectionId}`);
+  }
+  if (!documentZone) {
+    documentZone = document.querySelector(`.${sectionId}`);
+  }
+  return documentZone;
+}
+
+function findSections(section: HTMLElement, sectionId: string) {
+  const matches = [];
+  const zone = getDocumentZone(sectionId);
+  const ignore = ['SCRIPT', 'STYLE', 'META', 'LINK', 'NOSCRIPT'];
+  for (let i = 0; i < section.children.length; i += 1) {
+    const n = section.children[i];
+    if (
+      n
+        && n.nodeType === 1
+        && n instanceof HTMLElement
+        && !ignore.includes(n.tagName)
+    ) {
+      let found = false;
+      if (n.id) {
+        const target = document.querySelector(`#${n.id}`);
+        if (target) {
+          found = true;
+          matches.push({ target, source: n, type: 'update' });
+        }
+      }
+      if (!found && n.classList.length > 0) {
+        const selector = `.${[...n.classList].join('.')}`;
+        const target = zone?.querySelector(selector) || document.querySelector(selector);
+        if (target) {
+          found = true;
+          matches.push({ target, source: n, type: 'update' });
+        }
+      }
+      if (!found) {
+        const selector = Array.from(n.attributes, ({ name, value }) => `[${name}='${value}']`).join('');
+        const target = zone?.querySelector(selector) || document.querySelector(selector);
+        if (target) {
+          found = true;
+          matches.push({ target, source: n, type: 'update' });
+        }
+      }
+      if (!found && zone) {
+        matches.push({ target: zone, source: n, type: 'append' });
+      }
+    }
+  }
+  return matches;
+}
+
+function getExtractors(
+  extractors: Array<{
+    selector: string,
+    type: string,
+    attribute: string,
+  }>,
+  source: HTMLElement,
+  target: HTMLElement,
+) {
+  for (let i = 0; i < extractors.length; i += 1) {
+    const { selector, attribute, type } = extractors[i];
+    const sourceElement = source.querySelector(selector);
+    if (sourceElement) {
+      const targetElement = target.querySelector(selector);
+      if (targetElement) {
+        if (type === 'attribute') {
+          const value = sourceElement.getAttribute(attribute);
+          if (value) {
+            targetElement.setAttribute(attribute, value);
+          }
+        } else if (type === 'replace') {
+          targetElement.outerHTML = sourceElement.outerHTML;
+        }
+      }
+    }
+  }
+}
+
+async function updateSections(
+  payload: UpdateSections,
+  sectionConfig: SectionConfig,
+) {
+  if (!payload || !payload.sections) {
+    return;
+  }
+  for (const sectionId in payload.sections) {
+    const node = document.createElement('div');
+    node.innerHTML = payload.sections[sectionId];
+    if (!node.firstChild || !(node.firstChild instanceof HTMLElement)) {
+      return;
+    }
+    const matches = findSections(node.firstChild, sectionId);
+    for (let i = 0; i < matches.length; i += 1) {
+      const { target, source, type } = matches[i];
+      if (target && source) {
+        if (type === 'update') {
+          if (sectionConfig?.extractors && sectionConfig?.extractors[sectionId]) {
+            getExtractors(sectionConfig.extractors[sectionId], source, target);
+          } else {
+            target.outerHTML = source.outerHTML;
+          }
+        } else if (type === 'append') {
+          target.appendChild(source);
+        }
+      }
+    }
+  }
+}
+
+async function updateMOS() {
+  if (window._cart && window._cart.update) {
+    try {
+      await window._cart.update();
+      const cartButton = document.querySelector('[href="/#modal--cart-drawer"]');
+      if (cartButton) {
+        cartButton.click();
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+}
+
 export {
   updateVPScart,
   updateCartNode,
   updateLBYcart,
   updateCymbiotika,
-  updateScentChipsCart,
-  updateBaileysCbdCart,
   updateLeatherNeckCart,
   triggerCartFlow,
   dispatchNotification,
   updateCartSections,
   updateRidgeCart,
+  updateSections,
+  updateMOS,
 };

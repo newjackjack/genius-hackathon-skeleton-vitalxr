@@ -4,18 +4,35 @@ import type { Node } from 'react';
 
 import type { ReviewCardDefault } from '../../../entities';
 import { CardSpace, CardWrapper } from '../CardComponents';
-import { AppImage, AppRating } from '../../AppComponents';
-
-import ReviewIcon from '../../../assets/icons/pg-review-icon-round.svg';
+import { AppRating, AppText, AppDivider } from '../../AppComponents';
 
 type FeedReviewCardDefaultProps = {
   card: ReviewCardDefault,
 };
 
 function FeedReviewCardDefault({ card }: FeedReviewCardDefaultProps): Node {
+  const renderProductRating = (): Node => {
+    if (card.review_info.stars) {
+      return (
+        <div
+          className="pg-card-product-rating"
+          style={{
+            paddingBottom: 'calc(var(--pg-padding-card-content-title) - 4px)',
+          }}
+        >
+          <AppRating
+            style={{ scale: '1.2', transformOrigin: 'left' }}
+            ratingValue={card.review_info.stars}
+            ratingCount={1}
+          />
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
     <CardWrapper
-      style={{ overflow: 'hidden' }}
       size="auto"
       card={card}
       grid={card.layout_state || '1x1'}
@@ -24,72 +41,19 @@ function FeedReviewCardDefault({ card }: FeedReviewCardDefaultProps): Node {
         selector="pg-review-card-1x2-default"
         type="vertical-full"
         style={{
-          padding: 18,
-          backgroundColor: 'var(--pg-color-bk-feed-card-qa)',
+          padding: 'var(--pg-padding-content)',
         }}
       >
-        <div
-          className="pg-card-text"
-          style={{
-            color: '#000000',
-            font: 'var(--pg-font-s)',
-            fontWeight: 600,
-            paddingBottom: 14,
-          }}
-        >
-          <ReviewIcon
-            style={{
-              marginRight: 6,
-              flexShrink: 0,
-              top: 4,
-              position: 'relative',
-            }}
-          />
-          Product Reviews
-        </div>
-        <div className="pg-card-section" style={{ display: 'flex' }}>
-          <AppImage
-            hover
-            imageURL={card.review_info.image_url}
-            style={{
-              height: 45,
-              width: 45,
-              marginBottom: 16,
-              marginRight: 10,
-              borderRadius: 5,
-              backgroundColor: '#ffffff',
-            }}
-          />
+        <div className="pg-card-section">
+          {renderProductRating()}
           {card.review_info.product_title && (
-            <div
-              data-selector="pg-review-card-1x2-default-title"
-              style={{
-                font: 'var(--pg-font-s)',
-                color: '#000000',
-              }}
-            >
+            <AppText bold size="l">
               {card.review_info.product_title}
-            </div>
+            </AppText>
           )}
         </div>
-        <div
-          data-selector="pg-review-card-1x2-default-review"
-          style={{
-            font: 'var(--pg-font-m)',
-            color: '#000000',
-            padding: 'var(--pg-padding-card-content-text)',
-            background: 'var(--pg-color-bk-feed-card-content)',
-            borderRadius: 4,
-            height: '100%',
-          }}
-        >
-          <AppRating
-            ratingCount={1}
-            ratingValue={card.review_info.stars}
-            style={{ paddingBottom: 14 }}
-          />
-          {`"${card.review_info.review_text}"`}
-        </div>
+        <AppDivider size="l" color="dark" />
+        <AppText size="m">{`"${card.review_info.review_text}"`}</AppText>
       </CardSpace>
     </CardWrapper>
   );

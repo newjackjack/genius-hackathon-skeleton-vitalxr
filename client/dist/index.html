@@ -31,10 +31,23 @@
   <script>
     GAMALON.init({
       container: '#pg-app-wrapper',
-      organizationId: '',  // Replace with your shopify store's organization ID 
+      organizationId: '', // Replace with your Shopify store's organization ID 
       serverURL: 'https://app.productgenius.io',
       serverBehavior: { },
       analytics: { disableAll: true },
+      design: {
+        tracking: {
+          feed: {
+            enabled: true,
+            metrics: {
+              enabled: true, //  Enable the linger event aggregation
+              heatmap: false, // Overlay a duration value on each card
+              interval: 5000, // Send a metric aggregate every 5 seconds if the user is idle
+            },
+            thresholds: [0.3, 0.7],
+          },
+        },
+      }
     });
   </script>
 </html>

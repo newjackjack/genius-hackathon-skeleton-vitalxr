@@ -17,12 +17,24 @@ export default function FeedPaginationTrigger({
     let paginationObserver = null;
     const { current: element } = paginationEl;
     if (element && pagination.enabled) {
+      if (pagination.offset) {
+        const parent = element.parentElement;
+        if (parent) {
+          const resizeObserver = new ResizeObserver((entries) => {
+            for (const entry of entries) {
+              const { scrollHeight } = entry.target;
+              element.style.transform = `translateY(-${scrollHeight * (1 - pagination.offset)}px)`;
+            }
+          });
+          resizeObserver.observe(parent);
+        }
+      }
       paginationObserver = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
               window.dispatchEvent(
-                new CustomEvent('pg-feed-event', {
+                new CustomEvent('pg-pagination-event', {
                   detail: { type: 'pg-next-page' },
                 }),
               );
@@ -30,7 +42,6 @@ export default function FeedPaginationTrigger({
           });
         },
         {
-          rootMargin: '100%',
           threshold: 1.0,
         },
       );
@@ -41,7 +52,7 @@ export default function FeedPaginationTrigger({
         paginationObserver.disconnect();
       }
     };
-  }, [pagination.enabled]);
+  }, [pagination.enabled, pagination.offset]);
 
   if (!pagination.enabled) {
     return null;

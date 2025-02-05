@@ -23,9 +23,19 @@ type CardWrapperProps = {
 function isMetaCard(card: FeedCard): boolean {
   if (
     card.type === 'skeleton_card'
-    && card.type === 'merch_card_video'
-    && card.type === 'merch_card_review'
-    && card.type === 'merch_card_qa'
+    || card.type === 'merch_card_video'
+    || card.type === 'merch_card_review'
+    || card.type === 'merch_card_qa'
+  ) {
+    return true;
+  }
+  return false;
+}
+
+function isContentCard(card: FeedCard): boolean {
+  if (
+    card.type === 'review_default_card'
+    || card.type === 'question_answer_default_card'
   ) {
     return true;
   }
@@ -50,20 +60,26 @@ function CardWrapper({
     }
     return () => {
       if (!isMetaCard(card) && removeTrackingRef) {
-        removeTrackingRef(card.id);
+        removeTrackingRef(card.render_key);
       }
     };
   }, [addTrackingRef, removeTrackingRef, card]);
 
   return (
     <m.div
-      id={card.id}
+      id={card.render_key}
       ref={cardRef}
       className="card-wrapper"
       data-size={size}
       data-grid={grid}
       data-ghost={ghost}
+      data-content={isContentCard(card)}
       data-shadow={shadow}
+      data-type={card.type}
+      data-zig={card.start_link}
+      data-zag={card.end_link}
+      data-two-col-empty={card.two_col_empty}
+      data-ratio={card.aspect_ratio || 'default'}
       style={style}
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
@@ -72,7 +88,7 @@ function CardWrapper({
         duration: 0.25,
       }}
     >
-      <div data-type={card.type} className="card-wrapper-content">{children}</div>
+      <div className="card-wrapper-content">{children}</div>
     </m.div>
   );
 }

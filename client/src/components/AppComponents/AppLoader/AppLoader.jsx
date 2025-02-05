@@ -50,7 +50,7 @@ export function AppLoaderPagination(): Node {
       return (
         <CardWrapper
           key={cardId}
-          card={{ id: cardId, type: 'skeleton_card' }}
+          card={{ id: cardId, type: 'skeleton_card', render_key: cardId }}
           style={{ overflow: 'hidden' }}
           size="auto"
           grid="1x1"
@@ -63,7 +63,7 @@ export function AppLoaderPagination(): Node {
       return (
         <CardWrapper
           key={cardId}
-          card={{ id: cardId, type: 'skeleton_card' }}
+          card={{ id: cardId, type: 'skeleton_card', render_key: cardId }}
           style={{ overflow: 'hidden' }}
           size="auto"
           grid="1x2"
@@ -83,7 +83,7 @@ function AppLoaderContent(): Node {
       return (
         <CardWrapper
           key={cardId}
-          card={{ id: cardId, type: 'skeleton_card' }}
+          card={{ id: cardId, type: 'skeleton_card', render_key: cardId }}
           style={{ overflow: 'hidden' }}
           size="auto"
           grid="1x1"
@@ -96,7 +96,7 @@ function AppLoaderContent(): Node {
       return (
         <CardWrapper
           key={cardId}
-          card={{ id: cardId, type: 'skeleton_card' }}
+          card={{ id: cardId, type: 'skeleton_card', render_key: cardId }}
           style={{ overflow: 'hidden' }}
           size="auto"
           grid="1x2"
@@ -109,7 +109,15 @@ function AppLoaderContent(): Node {
   });
 
   return (
-    <m.div data-loader="pg-content" className="pg-portal-feed pg-no-scroll-bar">
+    <m.div
+      data-loader="pg-content"
+      className="pg-portal-feed pg-no-scroll-bar"
+      style={{
+        maxwidth: '100%',
+        width: '100%',
+        '--pg-aspect-ratio-card': 'auto',
+      }}
+    >
       {renderGridPattern()}
     </m.div>
   );

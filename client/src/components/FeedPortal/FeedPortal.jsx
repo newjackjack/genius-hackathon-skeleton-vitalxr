@@ -86,7 +86,7 @@ function FeedPortal({ state, controller }: FeedPortalProps): Node {
   const { feed } = state;
   const { headerCard, summaryCard } = getPortalData(feed.feedCards);
   const {
-    flags, url, merchant, embedded,
+    flags, url, merchant, embedded, style,
   } = useContext(DesignContext);
 
   const onDispatchCardPayload = (card: FeedPayloadCard) => {
@@ -246,7 +246,7 @@ function FeedPortal({ state, controller }: FeedPortalProps): Node {
           onNavigateTimeline={onNavigateTimeline}
         />
         <FeedPortalCards
-          feed={getFormattedFeed(feed, merchant)}
+          feed={getFormattedFeed(feed, merchant, style?.grid)}
           pagination={state.pagination}
           onAddToCart={onAddToCart}
           onAddCoupon={onAddCoupon}

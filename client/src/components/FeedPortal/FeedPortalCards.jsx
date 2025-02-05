@@ -1,7 +1,5 @@
 // @flow
-import React, {
-  useCallback, useContext, useLayoutEffect, useRef,
-} from 'react';
+import React from 'react';
 import type { Node } from 'react';
 
 import type {
@@ -34,88 +32,18 @@ import {
   FeedMerchVideoCard,
   FeedMerchReviewCard,
   FeedMerchQaCard,
+  FeedStoryCard,
 } from '../FeedCards';
 
 import FeedPortalBanner from './FeedPortalBanner';
 import FeedPaginationTrigger from './FeedPaginationTrigger';
 
-import { FeedCardTracker, useScrollTable } from './feedTracker';
+import { FeedCardTracker } from './feedTracker';
 
 // $FlowIgnore
 import './feedPortalCards.scss';
 import { useShowFilterOptions } from '../../hooks';
 import { getPortalClassName } from './util';
-import { DesignContext } from '../../context';
-
-function FeedCardsWrapper({
-  children,
-  feedSource,
-}: {
-  children: Node,
-  feedSource: string,
-}): Node {
-  const scrollTop = useRef<number>(0);
-  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
-  const scrollContainer = useRef<HTMLElement | null>(null);
-  const { embedded: { scrollSource } } = useContext(DesignContext);
-  const { setEntry, getEntry } = useScrollTable();
-
-  const getScrollContainer = useCallback(() => {
-    if (scrollSource) {
-      const targetScrollNode = document.querySelector(scrollSource);
-      if (targetScrollNode) {
-        return targetScrollNode;
-      }
-    } else if (scrollContainerRef.current) {
-      return scrollContainerRef.current;
-    }
-    return null;
-  }, [scrollSource]);
-
-  const getScrollTop = useCallback(() => {
-    const container = getScrollContainer();
-    if (container) {
-      return container.scrollTop;
-    }
-    return 0;
-  }, [getScrollContainer]);
-
-  scrollTop.current = getScrollTop();
-
-  useLayoutEffect(() => {
-    scrollContainer.current = getScrollContainer();
-  }, [getScrollContainer]);
-
-  useLayoutEffect(() => {
-    const { current } = scrollContainer;
-    if (feedSource && current) {
-      const isProductPage = window.location.href.includes('/products');
-      const savedScrollPosition = getEntry(feedSource);
-      if (isProductPage) {
-        if (current.scrollTop !== savedScrollPosition && savedScrollPosition > 0) {
-          current.scrollTop = savedScrollPosition;
-        }
-      } else if (
-        feedSource === 'HOME_PG_BROWSE_BUTTON'
-        || feedSource === 'HOME_PG_FIND_BUTTON'
-      ) {
-        current.scrollTop = 0;
-      } else {
-        current.scrollTop = getEntry(feedSource);
-      }
-    }
-    return () => {
-      if (feedSource) {
-        setEntry(feedSource, scrollTop.current);
-      }
-    };
-  }, [feedSource, getEntry, setEntry]);
-  return (
-    <div ref={scrollContainerRef} className={getPortalClassName()}>
-      {children}
-    </div>
-  );
-}
 
 type FeedCardsProps = {
   feed: CardFeedState,
@@ -142,30 +70,33 @@ function FeedCards({
   onAddToCart,
   onAddCoupon,
 }: FeedCardsProps): Node {
-  const { feedSource, feedCards } = feed;
+  const { feedCards } = feed;
   const { visible } = useShowFilterOptions(feedCards);
 
   return (
-    <FeedCardsWrapper feedSource={feedSource}>
+    <div className={getPortalClassName()}>
       <FeedPortalBanner />
       <FeedCardTracker>
         {feedCards.map((card) => {
           if (card.type === 'merch_card_video') {
-            return <FeedMerchVideoCard key={card.id} card={card} />;
+            return <FeedMerchVideoCard key={card.render_key} card={card} />;
           }
           if (card.type === 'merch_card_review') {
-            return <FeedMerchReviewCard key={card.id} card={card} />;
+            return <FeedMerchReviewCard key={card.render_key} card={card} />;
           }
           if (card.type === 'merch_card_qa') {
-            return <FeedMerchQaCard key={card.id} card={card} />;
+            return <FeedMerchQaCard key={card.render_key} card={card} />;
+          }
+          if (card.type === 'storycard') {
+            return <FeedStoryCard key={card.render_key} card={card} />;
           }
           if (card.type === 'banner_card') {
-            return <FeedBannerCard key={card.id} card={card} />;
+            return <FeedBannerCard key={card.render_key} card={card} />;
           }
           if (card.type === 'product_detail_card') {
             return (
               <FeedProductCard
-                key={card.id}
+                key={card.render_key}
                 card={card}
                 onAddToCart={onAddToCart}
                 onCardSelect={onCardSelect}
@@ -173,15 +104,15 @@ function FeedCards({
             );
           }
           if (card.type === 'question_answer_default_card') {
-            return <FeedQuestionCardDefault key={card.id} card={card} />;
+            return <FeedQuestionCardDefault key={card.render_key} card={card} />;
           }
           if (card.type === 'question_answer_reveal_card') {
-            return <FeedQuestionRevealCard key={card.id} card={card} />;
+            return <FeedQuestionRevealCard key={card.render_key} card={card} />;
           }
           if (card.type === 'facet_value_card' && !visible) {
             return (
               <FeedFacetCard
-                key={card.id}
+                key={card.render_key}
                 card={card}
                 onFacetSelect={onFacetSelect}
               />
@@ -190,49 +121,49 @@ function FeedCards({
           if (card.type === 'text_input_card') {
             return (
               <FeedTextInputCard
-                key={card.id}
+                key={card.render_key}
                 card={card}
                 onCardInputSubmit={onCardInputSubmit}
               />
             );
           }
           if (card.type === 'review_card') {
-            return <FeedReviewCard key={card.id} card={card} />;
+            return <FeedReviewCard key={card.render_key} card={card} />;
           }
           if (card.type === 'review_default_card') {
-            return <FeedReviewCardDefault key={card.id} card={card} />;
+            return <FeedReviewCardDefault key={card.render_key} card={card} />;
           }
           if (card.type === 'customer_service_card') {
-            return <FeedCustomerServiceCard key={card.id} card={card} />;
+            return <FeedCustomerServiceCard key={card.render_key} card={card} />;
           }
           if (card.type === 'social_content_card') {
-            return <FeedSocialContentCard key={card.id} card={card} />;
+            return <FeedSocialContentCard key={card.render_key} card={card} />;
           }
           if (card.type === 'blog_card') {
-            return <FeedBlogCard key={card.id} card={card} />;
+            return <FeedBlogCard key={card.render_key} card={card} />;
           }
           if (card.type === 'product_summary_card') {
             return (
               <FeedProductSummaryCard
-                key={card.id}
+                key={card.render_key}
                 card={card}
                 onAddToCart={onAddToCart}
               />
             );
           }
           if (card.type === 'product_description_card') {
-            return <FeedProductDescriptionCard key={card.id} card={card} />;
+            return <FeedProductDescriptionCard key={card.render_key} card={card} />;
           }
           if (card.type === 'product_image_card') {
-            return <FeedProductImageCard key={card.id} card={card} />;
+            return <FeedProductImageCard key={card.render_key} card={card} />;
           }
           if (card.type === 'video_card') {
-            return <FeedVideoCard key={card.id} card={card} />;
+            return <FeedVideoCard key={card.render_key} card={card} />;
           }
           if (card.type === 'coupon_card') {
             return (
               <FeedCouponCard
-                key={card.id}
+                key={card.render_key}
                 card={card}
                 onAddCoupon={onAddCoupon}
               />
@@ -241,7 +172,7 @@ function FeedCards({
           if (card.type === 'variant_group_card') {
             return (
               <FeedProductVariantCard
-                key={card.id}
+                key={card.render_key}
                 card={card}
                 onAddToCart={onAddToCart}
                 onCardSelect={onCardSelect}
@@ -249,12 +180,12 @@ function FeedCards({
             );
           }
           if (card.type === 'introduction_card') {
-            return <FeedGreetingCard key={card.id} card={card} />;
+            return <FeedGreetingCard key={card.render_key} card={card} />;
           }
           if (card.type === 'comparison_card') {
             return (
               <FeedComparisonCard
-                key={card.id}
+                key={card.render_key}
                 card={card}
                 onAddToCart={onAddToCart}
                 onCardSelect={onCardSelect}
@@ -265,7 +196,7 @@ function FeedCards({
         })}
       </FeedCardTracker>
       <FeedPaginationTrigger loading={pagination} />
-    </FeedCardsWrapper>
+    </div>
   );
 }
 

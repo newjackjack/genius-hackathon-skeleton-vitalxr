@@ -12,6 +12,9 @@ import safeLocalStorage from './safeLocalStorage';
 
 export const defaultDesign: AppDesignProps = {
   layout: 'embedded',
+  pageActions: {
+    hide: [],
+  },
   language: {
     buttons: {
       cart: 'Add to cart',
@@ -21,14 +24,26 @@ export const defaultDesign: AppDesignProps = {
   pagination: {
     enabled: false,
     persistent: false,
+    offset: 0.8,
   },
   merchant: {
     enabled: false,
+    sequenceLines: false,
     mode: 'preview',
   },
   style: {
     global: '',
     merchant: '',
+    layout: '',
+    grid: {
+      enabled: false,
+      mobile: {
+        columns: 1,
+      },
+      desktop: {
+        columns: 4,
+      },
+    },
   },
   container: {
     style: '',
@@ -106,9 +121,16 @@ export const defaultDesign: AppDesignProps = {
       node: '',
       url: '',
     },
+    cartPDP: {
+      enabled: false,
+    },
     sectionExtractor: {
       selector: '',
       attribute: '',
+    },
+    sectionConfig: {
+      type: 'inner',
+      extractors: {},
     },
   },
   tracking: {
@@ -132,6 +154,9 @@ export function getDesignConfig(config: AppConfig): AppDesignProps {
   const { design } = config;
   return produce(defaultDesign, (draftState) => {
     draftState.layout = design?.layout || draftState.layout;
+    draftState.pageActions = {
+      hide: design?.pageActions?.hide || draftState.pageActions.hide,
+    };
     draftState.language = {
       buttons: {
         cart: design?.language?.buttons?.cart || draftState.language.buttons.cart,
@@ -141,9 +166,11 @@ export function getDesignConfig(config: AppConfig): AppDesignProps {
     draftState.pagination = {
       enabled: design?.pagination?.enabled ?? draftState.pagination.enabled,
       persistent: design?.pagination?.persistent ?? draftState.pagination.persistent,
+      offset: design?.pagination?.offset ?? draftState.pagination.offset,
     };
     draftState.merchant = {
       enabled: design?.merchant?.enabled ?? draftState.merchant.enabled,
+      sequenceLines: design?.merchant?.sequenceLines ?? draftState.merchant.sequenceLines,
       mode: design?.merchant?.mode || draftState.merchant.mode,
     };
     draftState.flags = {
@@ -157,6 +184,18 @@ export function getDesignConfig(config: AppConfig): AppDesignProps {
     draftState.style = {
       global: design?.style?.global || draftState.style.global,
       merchant: design?.style?.merchant || draftState.style.merchant,
+      layout: design?.style?.layout || draftState.style.layout,
+      grid: {
+        enabled: design?.style?.grid?.enabled ?? draftState.style.grid.enabled,
+        mobile: {
+          columns: design?.style?.grid?.mobile?.columns
+            || draftState.style.grid.mobile.columns,
+        },
+        desktop: {
+          columns: design?.style?.grid?.desktop?.columns
+            || draftState.style.grid.desktop.columns,
+        },
+      },
     };
     draftState.container = {
       style: design?.container?.style ?? draftState.container.style,
@@ -226,6 +265,11 @@ export function getDesignConfig(config: AppConfig): AppDesignProps {
       sections: design?.cart?.sections || draftState.cart.sections,
       cartURL: design?.cart?.cartURL || draftState.cart.cartURL,
       cartFlow: design?.cart?.cartFlow || draftState.cart.cartFlow,
+      cartPDP: {
+        enabled:
+          design?.cart?.cartPDP?.enabled
+          ?? draftState.cart.cartPDP.enabled,
+      },
       callbackConfig: {
         nodes:
           design?.cart?.callbackConfig?.nodes
@@ -243,6 +287,11 @@ export function getDesignConfig(config: AppConfig): AppDesignProps {
         attribute:
           design?.cart?.sectionExtractor?.attribute
           || draftState.cart.sectionExtractor.attribute,
+      },
+      sectionConfig: {
+        type: design?.cart?.sectionConfig?.type || draftState.cart.sectionConfig.type,
+        extractors: design?.cart?.sectionConfig?.extractors
+          || draftState.cart.sectionConfig.extractors,
       },
     };
     draftState.tracking = {

@@ -1,15 +1,18 @@
 .card-wrapper {
-  width: 100%;
+  width: var(--pg-width-card);
+  max-width: var(--pg-width-max-card);
+  aspect-ratio: var(--pg-aspect-ratio-card);
   border-radius: var(--pg-border-radius-card);
   box-shadow: var(--pg-shadow-card);
-  border: var(--pg-border-card) !important;
   padding: var(--pg-padding-card);
+  border: var(--pg-border-card) !important;
   background-color: var(--pg-color-bk-card) !important;
   background-repeat: no-repeat;
   background-position: center center;
   background-size: cover;
   position: relative;
   flex-shrink: 0;
+  overflow: hidden;
   &-content {
     border-radius: var(--pg-border-radius-card);
     height: 100%;
@@ -20,7 +23,7 @@
   }
   &[data-size='large'] {
     height: auto;
-    min-height: 315px;
+    min-height: 215px;
   }
   &[data-size='auto'] {
     height: auto;
@@ -75,6 +78,46 @@
       padding: 4px 8px;
       border-radius: 4px;
       border: 1px solid #c9c9c9;
+    }
+  }
+  &[data-content='true'] {
+    border: var(--pg-border-card-content) !important;
+  }
+  &[data-ratio='9:16'] {
+    aspect-ratio: var(--pg-aspect-ratio-card-vertical);
+  }
+  &[data-ratio='16:9'] {
+    aspect-ratio: var(--pg-aspect-ratio-card-horizontal);
+  }
+}
+
+.card-wrapper {
+  &[data-zig='true'] {
+    --pg-padding-card: 12px;
+    &::before {
+      content: '';
+      pointer-events: none;
+      height: var(--pg-zig-zag-line-h);
+      width: var(--pg-zig-zag-line-h);
+      top: 0;
+      left: 0;
+      position: absolute;
+      border-top: var(--pg-zig-line-size) solid var(--pg-zig-line-color) !important;
+      border-left: var(--pg-zig-line-size) solid var(--pg-zig-line-color) !important;
+    }
+  }
+  &[data-zag='true'] {
+    --pg-padding-card: 12px;
+    &::after {
+      content: '';
+      pointer-events: none;
+      height: var(--pg-zig-zag-line-h);
+      width: var(--pg-zig-zag-line-h);
+      bottom: calc(-1 * var(--pg-gap-feed));
+      right: 0;
+      position: absolute;
+      border-bottom: var(--pg-zag-line-size) solid var(--pg-zag-line-color) !important;
+      border-right: var(--pg-zag-line-size) solid var(--pg-zag-line-color) !important;
     }
   }
 }

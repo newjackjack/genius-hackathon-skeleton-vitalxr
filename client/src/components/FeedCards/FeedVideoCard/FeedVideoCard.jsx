@@ -16,18 +16,20 @@ type VideoCardProps = {
 function FeedVideoCard({ card }: VideoCardProps): Node {
   const iframeRef = useRef<HTMLIFrameElement|null>(null);
   const visibleRef = useRef(false);
+  const playStateRef = useRef('pauseVideo');
   const timestampRef = useRef(0);
   const { source, id } = getVideoId(card.video_link_url);
   const isMobile = useContext(MobileContext);
   const { analytics } = useContext(ConfigContext);
 
   const handlePlayState = React.useCallback(
-    (func: 'playVideo' | 'pauseVideo') => {
+    (func: 'playVideo' | 'pauseVideo' | 'toggle') => {
       if (iframeRef.current) {
+        playStateRef.current = func;
         toggleVideoPlayState({
           func,
-          key: card.id,
-          volume: 15,
+          key: card.render_key,
+          volume: 90,
           iframe: iframeRef.current,
         });
         if (func === 'playVideo' && !timestampRef.current) {
@@ -54,7 +56,7 @@ function FeedVideoCard({ card }: VideoCardProps): Node {
         visibleRef.current = intersecting;
         handlePlayState(intersecting ? 'playVideo' : 'pauseVideo');
       };
-      feedVideoTracker.on(card.id, callback);
+      feedVideoTracker.on(card.render_key, callback);
       feedVideoTracker.observe(element);
     }
     return () => {
@@ -62,7 +64,7 @@ function FeedVideoCard({ card }: VideoCardProps): Node {
         feedVideoTracker.unobserve(element);
       }
     };
-  }, [card.id, isMobile, handlePlayState]);
+  }, [card.render_key, isMobile, handlePlayState]);
 
   if (source === 'youtube' && id) {
     return (
@@ -70,7 +72,6 @@ function FeedVideoCard({ card }: VideoCardProps): Node {
         size="large"
         card={card}
         grid={card.layout_state || '1x2'}
-        style={{ overflow: 'hidden' }}
       >
         <CardSpace type="vertical-full">
           <m.div
@@ -88,7 +89,7 @@ function FeedVideoCard({ card }: VideoCardProps): Node {
           >
             <iframe
               ref={iframeRef}
-              id={card.id}
+              id={card.render_key}
               className="pg-card-embedded-youtube"
               title="pg-card-embedded-content"
               src={`https://www.youtube.com/embed/${id}?enablejsapi=1&mute=1`}
@@ -102,6 +103,24 @@ function FeedVideoCard({ card }: VideoCardProps): Node {
                 }
               }}
             />
+            {isMobile && (
+              <m.div
+                style={{
+                  position: 'absolute',
+                  height: 'calc(100% - 80px)',
+                  width: '100%',
+                  top: 0,
+                  left: 0,
+                }}
+                onClick={() => {
+                  handlePlayState(
+                    playStateRef.current === 'playVideo'
+                      ? 'pauseVideo'
+                      : 'playVideo',
+                  );
+                }}
+              />
+            )}
           </m.div>
         </CardSpace>
       </CardWrapper>

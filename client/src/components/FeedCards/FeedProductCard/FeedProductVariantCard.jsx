@@ -24,7 +24,6 @@ function FeedProductVariantCard({
         card={card}
         size="auto"
         grid="1x2"
-        style={{ overflow: 'hidden' }}
       >
         <VariantCardLarge
           card={card}

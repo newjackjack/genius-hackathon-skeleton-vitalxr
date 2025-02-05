@@ -20,7 +20,6 @@ function FeedProductDescriptionCard({
       card={card}
       size="auto"
       grid={card.layout_state || '1x2'}
-      style={{ overflow: 'hidden' }}
     >
       <CardSpace
         type="vertical-full"

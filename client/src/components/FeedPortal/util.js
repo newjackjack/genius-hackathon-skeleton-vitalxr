@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 // @flow
 import { produce } from 'immer';
 import type {
@@ -8,6 +9,7 @@ import type {
   Product,
   CardFeedState,
   AppMerchantConfig,
+  AppGridConfig,
 } from '../../entities';
 import { getHeaderContentType } from '../../utils/componentUtils';
 
@@ -253,9 +255,66 @@ export function getSortedFeed(
   };
 }
 
+function getCardSequence(card: FeedCard): string {
+  if (
+    card?.type === 'product_detail_card'
+    || card?.type === 'variant_group_card'
+  ) {
+    return card.id;
+  }
+  if (card?.related_card_id) {
+    return card.related_card_id;
+  }
+  return '';
+}
+
+function appendSequenceLinks(feed: CardFeedState): CardFeedState {
+  return produce(feed, (draft) => {
+    for (let i = 0; i < draft.feedCards.length; i += 1) {
+      const cardPrev: FeedCard = draft.feedCards[i - 1];
+      const card: FeedCard = draft.feedCards[i];
+      const sequencePrev = getCardSequence(cardPrev);
+      const sequence = getCardSequence(card);
+      if (sequence !== sequencePrev) {
+        // $FlowIgnore
+        card.start_link = true;
+        // $FlowIgnore
+        cardPrev.end_link = true;
+      }
+    }
+  });
+}
+
+function appendGridLinks(
+  feed: CardFeedState,
+  grid: AppGridConfig,
+): CardFeedState {
+  if (grid?.mobile?.columns === 2) {
+    return produce(feed, (draft) => {
+      let count = 0;
+      for (let i = 0; i < draft.feedCards.length; i += 1) {
+        const card = draft.feedCards[i];
+        if (card && card.layout_state === '1x1') {
+          count += 1;
+          const cardNext: FeedCard = draft.feedCards[i + 1];
+          if (cardNext && cardNext.layout_state === '1x2') {
+            if (count % 2 !== 0) {
+              // $FlowIgnore
+              card.two_col_empty = true;
+              count = 0;
+            }
+          }
+        }
+      }
+    });
+  }
+  return feed;
+}
+
 export function getFormattedFeed(
   feed: CardFeedState,
   config: AppMerchantConfig,
+  grid: AppGridConfig,
 ): CardFeedState {
   if (config.enabled && config.mode === 'settings') {
     const injectionCards = [
@@ -265,6 +324,7 @@ export function getFormattedFeed(
           id: 'merch_card_video_1',
           type: 'merch_card_video',
           source_id: 'HOME',
+          render_key: 'merch_card_video_1',
         },
       },
       {
@@ -273,6 +333,7 @@ export function getFormattedFeed(
           id: 'merch_card_review_1',
           type: 'merch_card_review',
           source_id: 'HOME',
+          render_key: 'merch_card_review_1',
         },
       },
       {
@@ -281,6 +342,7 @@ export function getFormattedFeed(
           id: 'merch_card_qa_1',
           type: 'merch_card_qa',
           source_id: 'HOME',
+          render_key: 'merch_card_qa_1',
         },
       },
     ];
@@ -294,6 +356,12 @@ export function getFormattedFeed(
       ...feed,
       feedCards: merchFeedCards,
     };
+  }
+  if (config.sequenceLines) {
+    return appendSequenceLinks(feed);
+  }
+  if (grid.enabled) {
+    return appendGridLinks(feed, grid);
   }
   return feed;
 }

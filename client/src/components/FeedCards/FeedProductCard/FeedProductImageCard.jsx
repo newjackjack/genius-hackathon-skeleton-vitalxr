@@ -16,7 +16,6 @@ function FeedProductImageCard({ card }: ProductImageCardProps): Node {
       card={card}
       size="medium"
       grid={card.layout_state || '1x2'}
-      style={{ overflow: 'hidden' }}
     >
       <AppImage
         imageURL={card.image_url}
@@ -24,6 +23,8 @@ function FeedProductImageCard({ card }: ProductImageCardProps): Node {
         style={{
           height: '100%',
           width: '100%',
+          borderRadius: '15px',
+          border: '1px solid #000',
         }}
       />
     </CardWrapper>

@@ -110,10 +110,10 @@ export type AppConfigFlags = {
 
 export type AppLanguage = {
   buttons: {
-    cart: string;
-    reorder: string;
-  }
-}
+    cart: string,
+    reorder: string,
+  },
+};
 
 export type NewFacetConstraintPayload = {
   type: 'new_facet_constraint',
@@ -177,22 +177,22 @@ export type RestorePreviousStatePayload = {
 export type TimelineStateFrame = {
   title: string,
   constraints: Array<any>,
-}
+};
 
 export type FeedConstraintTimeline = {
   type: 'constraint timeline',
   current_index: number,
   state_frames: Array<TimelineStateFrame>,
-}
+};
 
 export type RestoreTimelinePayload = {
   n: number,
-  timeline : FeedConstraintTimeline,
-  type: "restore_previous_state"
-}
+  timeline: FeedConstraintTimeline,
+  type: 'restore_previous_state',
+};
 
 export type InputCardPayload = {
-  timeline : FeedConstraintTimeline,
+  timeline: FeedConstraintTimeline,
   text: string,
   type: 'text_message_payload',
 };
@@ -254,8 +254,8 @@ export type Product = {
   price: string,
   created_at: string,
   variant_id: number,
-  product_id: number|string,
-  product_metadata: { [string]: number|string },
+  product_id: number | string,
+  product_metadata: { [string]: number | string },
   subtitle: string,
   summary: string,
   number_of_variants: number,
@@ -300,6 +300,7 @@ export type WelcomeCard = {
   subtext: string,
   type: 'welcome_card',
   payload: GetCardsPayload,
+  render_key: string,
 };
 
 export type CardLayoutState = '1x1' | '1x2' | '2x2' | '1x1_plain' | 'full_w';
@@ -316,6 +317,7 @@ export type CategoryCard = {
   source_id: string,
   layout_state: CardLayoutState,
   payload: GetCardsPayload,
+  render_key: string,
 };
 
 export type ProductReviewInfo = {
@@ -336,6 +338,10 @@ export type ProducDetailsCard = {
   payload: ConstraintPayload,
   review_info?: ProductReviewInfo,
   product_recommendation_type: string,
+  start_link?: boolean,
+  two_col_empty?: boolean,
+  end_link?: boolean,
+  render_key: string,
 };
 
 export type ReviewCard = {
@@ -344,6 +350,11 @@ export type ReviewCard = {
   type: 'review_card',
   layout_state: CardLayoutState,
   review_info: ProductReviewInfo,
+  related_card_id?: string,
+  start_link?: boolean,
+  two_col_empty?: boolean,
+  end_link?: boolean,
+  render_key: string,
 };
 
 export type ReviewCardDefault = {
@@ -352,6 +363,11 @@ export type ReviewCardDefault = {
   type: 'review_default_card',
   layout_state: CardLayoutState,
   review_info: ProductReviewInfo,
+  related_card_id?: string,
+  start_link?: boolean,
+  two_col_empty?: boolean,
+  end_link?: boolean,
+  render_key: string,
 };
 
 export type QuestionCard = {
@@ -362,6 +378,7 @@ export type QuestionCard = {
   type: 'question_answer_card',
   answer: string,
   payload: GetCardsPayload,
+  render_key: string,
 };
 
 export type QuestionCardDefault = {
@@ -371,6 +388,11 @@ export type QuestionCardDefault = {
   layout_state: CardLayoutState,
   type: 'question_answer_default_card',
   answer: string,
+  related_card_id?: string,
+  start_link?: boolean,
+  two_col_empty?: boolean,
+  end_link?: boolean,
+  render_key: string,
 };
 
 export type QuestionRevealCard = {
@@ -383,6 +405,7 @@ export type QuestionRevealCard = {
       answer: string,
     }
   ],
+  render_key: string,
 };
 
 export type FacetValueCard = {
@@ -391,6 +414,7 @@ export type FacetValueCard = {
   source_id: string,
   type: 'facet_value_card',
   facet_value_buttons: Array<SuggestionButton>,
+  render_key: string,
 };
 
 export type PaginationCard = {
@@ -398,6 +422,7 @@ export type PaginationCard = {
   source_id: string,
   type: 'pagination_card',
   payload: GetCardsPayload,
+  render_key: string,
 };
 
 export type TextInputCard = {
@@ -408,6 +433,7 @@ export type TextInputCard = {
     text?: string,
   },
   type: 'text_input_card',
+  render_key: string,
 };
 
 export type HeaderCard = {
@@ -417,6 +443,7 @@ export type HeaderCard = {
   source_id: string,
   type: 'header_card',
   payload: RestoreTimelinePayload,
+  render_key: string,
 };
 
 export type BannerCard = {
@@ -432,6 +459,7 @@ export type BannerCard = {
   },
   source_id: string,
   type: 'banner_card',
+  render_key: string,
 };
 
 export type ServiceCardActionClick = {
@@ -446,6 +474,8 @@ export type ServiceCardActionURL = {
 
 export type ServiceCardAction = ServiceCardActionClick | ServiceCardActionURL;
 
+export type AspectRatio = '16:9' | '9:16' | 'default';
+
 export type CustomerServiceCard = {
   id: string,
   source_id: string,
@@ -455,6 +485,7 @@ export type CustomerServiceCard = {
   button_text: string,
   action: ServiceCardAction,
   lca: Array<string>,
+  render_key: string,
 };
 
 export type SocialContentCard = {
@@ -465,6 +496,11 @@ export type SocialContentCard = {
   iframe_url: string,
   image_url: string,
   caption_html: string,
+  related_card_id?: string,
+  start_link?: boolean,
+  two_col_empty?: boolean,
+  end_link?: boolean,
+  render_key: string,
 };
 
 export type BlogCard = {
@@ -476,6 +512,20 @@ export type BlogCard = {
   summary: string,
   content_html: string,
   content_url: string,
+  render_key: string,
+};
+
+export type StoryCard = {
+  id: string,
+  source_id: string,
+  type: 'storycard',
+  image_url: string,
+  video_link_url: string,
+  title: string,
+  description: string,
+  content_html: string,
+  layout_state: 'horizontal' | 'vertical' | 'backdrop',
+  render_key: string,
 };
 
 export type ProductSummaryCard = {
@@ -485,6 +535,7 @@ export type ProductSummaryCard = {
   product: Product,
   product_recommendation_type: string,
   layout_state: CardLayoutState,
+  render_key: string,
 };
 
 export type ProductDescriptionCard = {
@@ -494,6 +545,7 @@ export type ProductDescriptionCard = {
   title: string,
   description: string,
   layout_state: CardLayoutState,
+  render_key: string,
 };
 
 export type ProductImageCard = {
@@ -503,6 +555,7 @@ export type ProductImageCard = {
   image_url: string,
   image_position: string,
   layout_state: CardLayoutState,
+  render_key: string,
 };
 
 export type ProductImageCarouselCard = {
@@ -511,6 +564,7 @@ export type ProductImageCarouselCard = {
   type: 'product_image_carousel_card',
   image_urls: Array<string>,
   layout_state: CardLayoutState,
+  render_key: string,
 };
 
 export type VideoCard = {
@@ -520,6 +574,12 @@ export type VideoCard = {
   type: 'video_card',
   video_link_url: string,
   layout_state: CardLayoutState,
+  aspect_ratio: AspectRatio,
+  related_card_id?: string,
+  start_link?: boolean,
+  two_col_empty?: boolean,
+  end_link?: boolean,
+  render_key: string,
 };
 
 export type CouponCardInfo = {
@@ -528,24 +588,26 @@ export type CouponCardInfo = {
   code: string,
   discount: any,
   banner?: string,
-}
+  render_key: string,
+};
 
 export type CouponCard = {
   id: string,
   source_id: string,
   type: 'coupon_card',
   image_url: string,
-  coupon_info: CouponCardInfo
+  coupon_info: CouponCardInfo,
+  render_key: string,
 };
 
 export type ProductVaraint = {
   product: Product,
   variant_properties: string,
-}
+};
 
 export type ProductVariants = {
   [string]: ProductVaraint,
-}
+};
 
 export type ProductVariantCard = {
   id: string,
@@ -558,6 +620,7 @@ export type ProductVariantCard = {
   payload: ConstraintPayload,
   variant_type?: 'default' | 'properties',
   product_recommendation_type: string,
+  render_key: string,
 };
 
 export type IntroductionCard = {
@@ -569,6 +632,7 @@ export type IntroductionCard = {
     subtitle: string,
   },
   layout_state: CardLayoutState,
+  render_key: string,
 };
 
 export type ComparisonCard = {
@@ -581,29 +645,34 @@ export type ComparisonCard = {
     description: string,
   },
   products: Array<Product>,
+  render_key: string,
 };
 
 type SkeletonCard = {
   id: string,
   type: 'skeleton_card',
+  render_key: string,
 };
 
 export type MerchCardVideo = {
   id: string,
   type: 'merch_card_video',
   source_id: string,
+  render_key: string,
 };
 
 export type MerchCardReview = {
   id: string,
   type: 'merch_card_review',
   source_id: string,
+  render_key: string,
 };
 
 export type MerchCardQA = {
   id: string,
   type: 'merch_card_qa',
   source_id: string,
+  render_key: string,
 };
 
 export type FeedCard =
@@ -635,7 +704,8 @@ export type FeedCard =
   | SkeletonCard
   | MerchCardVideo
   | MerchCardReview
-  | MerchCardQA;
+  | MerchCardQA
+  | StoryCard;
 
 export type FeedPayloadCard =
   | CategoryCard
@@ -664,16 +734,19 @@ export type BotToVisitorMessage = {
 export type BotLingerMessage = {
   type: 'bot_linger_message',
   id: string,
-  product_ids: Array<string|number>,
+  product_ids: Array<string | number>,
   cards: Array<FeedCard>,
-}
+};
 
 export type BotPaginationMessage = {
   type: 'bot_message_pagination',
   cards: Array<FeedCard>,
-}
+};
 
-export type BotMessage = BotToVisitorMessage | BotPaginationMessage | BotLingerMessage;
+export type BotMessage =
+  | BotToVisitorMessage
+  | BotPaginationMessage
+  | BotLingerMessage;
 
 // Visitor messsages
 export type VisitorTextMessage = {|
@@ -715,7 +788,7 @@ export type VisitorButtonClick = {|
 export type VisitorLingerRequest = {|
   type: 'visitor_linger_request',
   id: string,
-  product_ids: Array<string|number>,
+  product_ids: Array<string | number>,
   server_behavior?: ServerBehavior,
   current_url?: string,
 |};
@@ -927,7 +1000,7 @@ export type TrackingRuleGlobalInfo = {
       attribute: string,
     }>,
   }>,
-}
+};
 
 export type TrackingRule =
   | TrackingRuleView
@@ -941,41 +1014,67 @@ export type TrackingRule =
 
 export type AppMerchantConfig = {
   enabled: boolean,
-  mode: "settings" | "preview",
+  sequenceLines: boolean,
+  mode: 'settings' | 'preview',
 };
 
 export type SectionRuleUpdate = {
-  type: 'section_update';
-  sections: string[];
-  urlPath: string;
-  action: 'update';
-  actionSelectors: string[];
-  actionTarget: string;
+  type: 'section_update',
+  sections: string[],
+  urlPath: string,
+  action: 'update',
+  actionSelectors: string[],
+  actionTarget: string,
 };
 
 export type SectionRuleAppend = {
-  type: 'section_append';
-  sections: string[];
-  urlPath: string;
-  action: 'push' | 'unshift';
-  actionSelectors: string[];
-  actionTarget: string;
+  type: 'section_append',
+  sections: string[],
+  urlPath: string,
+  action: 'push' | 'unshift',
+  actionSelectors: string[],
+  actionTarget: string,
 };
 
 export type SectionRule = SectionRuleUpdate | SectionRuleAppend;
 
 export type SectionCfg = {
-  enabled: boolean;
-  rules: SectionRule[];
+  enabled: boolean,
+  rules: SectionRule[],
 };
 
 export type SectionResponse = Promise<{
-  [key: string]: string | null;
+  [key: string]: string | null,
 }>;
 
 export type PagePattern = {
-  pattern: string;
-  type: 'include' | 'exclude';
+  pattern: string,
+  type: 'include' | 'exclude',
+};
+
+export type AppPageActions = {
+  hide: Array<string>,
+};
+
+export type SectionConfig = {
+  type: 'inner' | 'outer',
+  extractors: {
+    [string]: Array<{
+      selector: string,
+      type: string,
+      attribute: string,
+    }>,
+  },
+};
+
+export type AppGridConfig = {
+  enabled: boolean,
+  mobile: {
+    columns: number,
+  },
+  desktop: {
+    columns: number,
+  },
 };
 
 export type AppConfig = {
@@ -991,7 +1090,8 @@ export type AppConfig = {
     disableAll?: boolean,
     pagination?: {
       includeEvents?: boolean,
-    };
+      allowedEvents?: Array<string>,
+    },
     postHog?: {
       autocapture?: boolean,
       recording?: RecordingConfig,
@@ -1006,13 +1106,17 @@ export type AppConfig = {
     layout?: AppLayoutType,
     merchant?: AppMerchantConfig,
     language?: AppLanguage,
+    pageActions?: AppPageActions,
     pagination?: {
       enabled?: boolean,
+      offset?: number,
       persistent?: boolean,
     },
     style?: {
       global?: string,
       merchant?: string,
+      layout?: string,
+      grid?: AppGridConfig,
     },
     flags?: {
       contextInitialState?: boolean,
@@ -1031,7 +1135,7 @@ export type AppConfig = {
       },
     },
     navigation?: {
-      type?: 'default' | 'breadcrumbs'
+      type?: 'default' | 'breadcrumbs',
     },
     product?: {
       enableRating?: boolean,
@@ -1089,6 +1193,9 @@ export type AppConfig = {
       callback?: string,
       cartURL?: string,
       cartFlow?: Array<CartFlowAction>,
+      cartPDP: {
+        enabled?: boolean,
+      },
       callbackConfig?: {
         nodes?: Array<CallbackNodeConfig>,
       },
@@ -1101,6 +1208,7 @@ export type AppConfig = {
         selector?: string,
         attribute?: string,
       },
+      sectionConfig: SectionConfig,
     },
     tracking?: {
       source?: {
@@ -1131,27 +1239,31 @@ export type AppDesignProps = {
   merchant: AppMerchantConfig,
   flags: AppConfigFlags,
   language: AppLanguage,
+  pageActions: AppPageActions,
   pagination: {
     enabled: boolean,
-    persistent: boolean
+    offset: number,
+    persistent: boolean,
   },
   style: {
     global: string,
     merchant: string,
+    layout: string,
+    grid: AppGridConfig,
   },
   container: {
-   style: string,
+    style: string,
   },
   rendering: {
     context: {
       [string]: {
         target: string,
-        style: {[string]: any},
-      }
-    }
+        style: { [string]: any },
+      },
+    },
   },
   navigation: {
-    type: 'default' | 'breadcrumbs'
+    type: 'default' | 'breadcrumbs',
   },
   product: ProductConfig,
   allowedPagePatterns: Array<string>,
@@ -1175,7 +1287,7 @@ export type AppDesignProps = {
       navigation: {
         title: string,
         options: Array<NavFilter>,
-      }
+      },
     },
     menu: {
       visible: boolean,
@@ -1192,6 +1304,9 @@ export type AppDesignProps = {
     type: 'default' | 'open-url' | 'internal' | 'external',
     sections: string,
     cartFlow: Array<CartFlowAction>,
+    cartPDP: {
+      enabled: boolean,
+    },
     callback: string, // name of the callback function
     cartURL: string,
     callbackConfig: {
@@ -1206,6 +1321,7 @@ export type AppDesignProps = {
       selector: string,
       attribute: string,
     },
+    sectionConfig: SectionConfig,
   },
   tracking: {
     source: TrackingConfigSource,
@@ -1262,7 +1378,7 @@ export type CardFeedState = {
 
 export type LingerFeedState = {
   cards: Array<FeedCard>,
-  productIds: Array<number|string>,
+  productIds: Array<number | string>,
 };
 
 export type AppFeedState = {
@@ -1356,5 +1472,8 @@ export type MetricConstructor = {
   thresholds: Array<number>,
   heatmap: boolean,
   interval: number,
-  onUpdate: (durations: Map<string, MetricDuration>, type: 'action' | 'ping') => void,
+  onUpdate: (
+    durations: Map<string, MetricDuration>,
+    type: 'action' | 'ping'
+  ) => void,
 };

@@ -1,0 +1,17 @@
+.pg-app-text {
+  &[data-size='m'] {
+    font: var(--pg-font-content-m);
+  }
+  &[data-size='l'] {
+    font: var(--pg-font-content-l);
+  }
+  &[data-color='dark'] {
+    color: var(--pg-color-content-dark);
+  }
+  &[data-color='light'] {
+    color: var(--pg-color-content-light);
+  }
+  &[data-bold='true'] {
+    font-weight: bold;
+  }
+}
