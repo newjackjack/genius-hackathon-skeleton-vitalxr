@@ -56,6 +56,8 @@ window.GAMALON.init = async (config: AppConfig): any => {
     return;
   }
   window.GAMALON.pgInitialized = true;
+  window.GAMALON.username = config.username;
+  window.GAMALON.password = config.password;
 
   savedConfig = config;
   analytics = new RealAnalytics(config);

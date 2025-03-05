@@ -32,7 +32,7 @@ export class FeedCardController extends ChatController {
   }
 
   get authHeader(): string {
-    return 'Basic ' + btoa(`${this.username}:${this.password}`);
+    return 'Basic ' + btoa(`${window.GAMALON.username}:${window.GAMALON.password}`);
   }
 
   get status(): { state: string } {
