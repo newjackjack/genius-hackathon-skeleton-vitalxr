@@ -27,9 +27,12 @@ export class FeedCardController extends ChatController {
     return getServerUrl(
       this.#serverUrlBase,
       this.organizationId,
-      this.visitorId,
       this.sessionId,
     );
+  }
+
+  get authHeader(): string {
+    return 'Basic ' + btoa(`${this.username}:${this.password}`);
   }
 
   get status(): { state: string } {
@@ -55,12 +58,11 @@ export class FeedCardController extends ChatController {
       const events = JSON.parse(localStorage.getItem('GAMALON-events') || '[]');
       fetch(this.serverURL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': this.authHeader
+        },
         body: JSON.stringify({
-          type: 'visitor_new_session',
-          id: uuid(),
-          current_url: window.location.href,
-          server_behavior: this.serverBehavior,
           page: this.pagination.page,
           events,
         }),
@@ -108,18 +110,22 @@ export class FeedCardController extends ChatController {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'Authorization': this.authHeader
           },
           body: JSON.stringify({
-            type: 'visitor_new_session',
-            id: uuid(),
-            current_url: window.location.href,
-            server_behavior: this.serverBehavior,
+            page: 1,
+            batch_count: 10,
           }),
         })
           .then((response) => response.text())
           .then((cardPayload) => {
             if (cardPayload) {
-              this.callbacks.botMessage(JSON.parse(cardPayload));
+              const payload = JSON.parse(cardPayload);
+              console.log(payload.cards);
+              this.callbacks.botMessage({
+                type: 'bot_message',
+                cards: payload.cards,
+              });
               this.#status.state = 'loaded';
               resolve();
             }
@@ -136,7 +142,10 @@ export class FeedCardController extends ChatController {
     this.callbacks.visitorMessage(message);
     fetch(this.serverURL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': this.authHeader
+      },
       body: JSON.stringify(message),
     })
       .then((response) => response.json())

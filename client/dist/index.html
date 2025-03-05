@@ -31,9 +31,18 @@
   <script>
     GAMALON.init({
       container: '#pg-app-wrapper',
-      organizationId: '', // Replace with your Shopify store's organization ID 
+      organizationId: '######',  // Replace with your hackathon project identifier
+      username: '######',       // Replace with your hackathon basic auth username
+      password: '######',       // Replace with your hackathon basic auth password
       serverURL: 'https://app.productgenius.io',
-      serverBehavior: { },
+      serverBehavior: { 
+        lby_options: {
+          vgs_on_page: 20
+        },
+        infinite_scroll_options: {
+          enabled: true,
+        },
+      },
       analytics: { disableAll: true },
       design: {
         tracking: {
