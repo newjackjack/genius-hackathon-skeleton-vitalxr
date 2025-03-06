@@ -174,7 +174,6 @@ function ProductCardSmall({
         style={{
           width: '100%',
           height: 'var(--pg-height-card-image-m, 200px)',
-          backgroundColor: 'white',
         }}
         onError={(element) => {
           if (config.enableBackupImage) {

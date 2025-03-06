@@ -33,7 +33,6 @@ function FeedReviewCard({ card }: FeedReviewCardProps): Node {
             width: 78,
             marginBottom: 16,
             borderRadius: 15,
-            backgroundColor: '#ffffff',
           }}
         />
         <AppRating

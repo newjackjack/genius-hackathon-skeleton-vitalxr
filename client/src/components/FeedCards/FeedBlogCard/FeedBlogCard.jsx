@@ -31,7 +31,6 @@ function FeedBlogCard({ card }: BlogCardProps): Node {
             style={{
               height: 150,
               width: '100%',
-              backgroundColor: '#201E7B',
               marginBottom: 30,
             }}
           />

@@ -268,18 +268,29 @@ function getCardSequence(card: FeedCard): string {
   return '';
 }
 
+function isValidPair(card: FeedCard, cardPrev: FeedCard): boolean {
+  return (
+    card
+    && cardPrev
+    && card.type !== 'social_content_card'
+    && cardPrev.type !== 'social_content_card'
+  );
+}
+
 function appendSequenceLinks(feed: CardFeedState): CardFeedState {
   return produce(feed, (draft) => {
     for (let i = 0; i < draft.feedCards.length; i += 1) {
       const cardPrev: FeedCard = draft.feedCards[i - 1];
       const card: FeedCard = draft.feedCards[i];
-      const sequencePrev = getCardSequence(cardPrev);
-      const sequence = getCardSequence(card);
-      if (sequence !== sequencePrev) {
-        // $FlowIgnore
-        card.start_link = true;
-        // $FlowIgnore
-        cardPrev.end_link = true;
+      if (isValidPair(card, cardPrev)) {
+        const sequencePrev = getCardSequence(cardPrev);
+        const sequence = getCardSequence(card);
+        if (sequence !== sequencePrev) {
+          // $FlowIgnore
+          card.start_link = true;
+          // $FlowIgnore
+          cardPrev.end_link = true;
+        }
       }
     }
   });

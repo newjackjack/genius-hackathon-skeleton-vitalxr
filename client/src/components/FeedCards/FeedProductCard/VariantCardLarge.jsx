@@ -57,7 +57,6 @@ function VariantCardLarge({
         style={{
           height: 250,
           width: '100%',
-          backgroundColor: 'white',
           transform: 'translateZ(0)',
         }}
       />

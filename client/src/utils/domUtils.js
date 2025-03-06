@@ -76,8 +76,8 @@ export function appendGridSettings(styleId: string, grid: AppGridConfig) {
           --pg-grid-col-feed: ${gridColumns};
           --pg-aspect-ratio-card-vertical: 9 / 16;
           --pg-aspect-ratio-card-horizontal: 16 / 9;
-          --pg-grid-card-1x1-feed: span 1;
-          --pg-grid-card-1x2-feed: span ${gridColumns};
+          --pg-grid-card-1x1-feed: span 1 !important;
+          --pg-grid-card-1x2-feed: span ${gridColumns} !important;
         }
         .pg-embedded .card-wrapper[data-two-col-empty='true'] {
           grid-column: span ${gridColumns};
@@ -92,8 +92,8 @@ export function appendGridSettings(styleId: string, grid: AppGridConfig) {
         @media screen and (min-width:861px) {
           .pg-embedded {
             --pg-grid-col-feed: 1;
-            --pg-grid-card-1x1-feed: span 1;
-            --pg-grid-card-1x2-feed: span 1;
+            --pg-grid-card-1x1-feed: span 1 !important;
+            --pg-grid-card-1x2-feed: span 1 !important;
           }
         }
       `;
@@ -102,8 +102,10 @@ export function appendGridSettings(styleId: string, grid: AppGridConfig) {
         @media screen and (min-width:861px) {
           .pg-embedded {
             --pg-grid-col-feed: ${gridColumns};
-            --pg-grid-card-1x1-feed: span 1;
-            --pg-grid-card-1x2-feed: span 2;
+            --pg-grid-card-1x1-feed: span 1 !important;
+            --pg-grid-card-1x2-feed: span 2 !important;
+            --pg-content-feed-seqeunce: none;
+            --pg-seq-line-margin: 0;
           }
         }
       `;

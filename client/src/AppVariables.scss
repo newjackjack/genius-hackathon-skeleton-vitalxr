@@ -10,6 +10,7 @@
   --pg-color-bk-btn-buy-now: #ffffff;
   --pg-color-bk-feed: #ffffff;
   --pg-color-bk-card: unset;
+  --pg-color-bk-card-image: trasnparent;
   --pg-color-bk-feed-banner: #ffffff;
   --pg-color-bk-feed-banner-content: #ffffff00;
   --pg-color-bk-feed-card-product: transparent;
@@ -143,6 +144,7 @@
   --pg-content-card-review: 'review';
   --pg-content-card-review-multi: 'reviews';
   --pg-content-feed-sort-title-prefix: none;
+  --pg-content-feed-seqeunce: '';
 
   /* ------- ZIG-ZAG ------- */
   --pg-zig-zag-line-h: 30%;
@@ -150,6 +152,11 @@
   --pg-zag-line-color: #0BB4FC;
   --pg-zig-line-size: 1px;
   --pg-zag-line-size: 2px;
+  --pg-seq-line-width: 94%;
+  --pg-seq-line-color: #616161;
+  --pg-seq-line-size: 1px;
+  --pg-seq-handle-size: 14px;
+  --pg-seq-line-margin: 30px;
 
   /* ----- STORY CARDS ----- */
   --pg-story-padding: 20px;

@@ -115,7 +115,6 @@ function VariantCardSmall({
         style={{
           width: '100%',
           height: 'var(--pg-height-card-image-m, 200px)',
-          backgroundColor: 'white',
         }}
       />
       {renderProductHighlights()}
