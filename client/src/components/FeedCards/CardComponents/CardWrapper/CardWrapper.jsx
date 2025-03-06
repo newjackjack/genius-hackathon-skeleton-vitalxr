@@ -36,6 +36,7 @@ function isContentCard(card: FeedCard): boolean {
   if (
     card.type === 'review_default_card'
     || card.type === 'question_answer_default_card'
+    || card.type === 'social_content_card'
   ) {
     return true;
   }

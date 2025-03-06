@@ -1,6 +1,6 @@
 .pg-app-image {
   flex-shrink: 0;
-  background-color: rgb(242, 242, 242);
+  background-color: var(--pg-color-bk-card-image);
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -11,6 +11,7 @@
     user-select: none;
     filter: brightness(1.05);
     object-fit: var(--pg-object-fit-image);
+    mix-blend-mode: multiply;
     &[data-status='empty'] {
       height: 70% !important;
       object-fit: contain !important;
