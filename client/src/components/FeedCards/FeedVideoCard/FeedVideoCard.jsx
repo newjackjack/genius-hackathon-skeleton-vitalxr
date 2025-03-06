@@ -15,6 +15,7 @@ type VideoCardProps = {
 
 function FeedVideoCard({ card }: VideoCardProps): Node {
   const iframeRef = useRef<HTMLIFrameElement|null>(null);
+  const cardRef = useRef<HTMLDivElement|null>(null);
   const visibleRef = useRef(false);
   const playStateRef = useRef('pauseVideo');
   const timestampRef = useRef(0);
@@ -50,7 +51,7 @@ function FeedVideoCard({ card }: VideoCardProps): Node {
   );
 
   useLayoutEffect(() => {
-    const { current: element } = iframeRef;
+    const { current: element } = cardRef;
     if (element && isMobile) {
       const callback = (intersecting: boolean) => {
         visibleRef.current = intersecting;
@@ -75,6 +76,8 @@ function FeedVideoCard({ card }: VideoCardProps): Node {
       >
         <CardSpace type="vertical-full">
           <m.div
+            ref={cardRef}
+            id={card.render_key}
             className="pg-card-embedded"
             onHoverStart={() => {
               if (!isMobile) {
@@ -89,7 +92,6 @@ function FeedVideoCard({ card }: VideoCardProps): Node {
           >
             <iframe
               ref={iframeRef}
-              id={card.render_key}
               className="pg-card-embedded-youtube"
               title="pg-card-embedded-content"
               src={`https://www.youtube.com/embed/${id}?enablejsapi=1&mute=1`}
@@ -107,7 +109,7 @@ function FeedVideoCard({ card }: VideoCardProps): Node {
               <m.div
                 style={{
                   position: 'absolute',
-                  height: 'calc(100% - 80px)',
+                  height: 'calc(100% - 35px)',
                   width: '100%',
                   top: 0,
                   left: 0,

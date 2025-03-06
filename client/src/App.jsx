@@ -28,6 +28,15 @@ function ProductGenius(props: AppProps): Node {
         <DesignContext.Provider value={design}>
           <LazyMotion features={domAnimation}>
             <AppViewEmbedded />
+            <button
+              style={{ position: 'fixed', bottom: 0, right: 0, zIndex: 1000000 }}
+              onClick={() => {
+                localStorage.clear();
+                window.location.reload();
+              }}
+            >
+              &#x21bb;
+            </button>
           </LazyMotion>
         </DesignContext.Provider>
       </MobileContext.Provider>
