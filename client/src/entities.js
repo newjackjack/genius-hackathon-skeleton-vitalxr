@@ -1091,6 +1091,7 @@ export type AppConfig = {
     pagination?: {
       includeEvents?: boolean,
       allowedEvents?: Array<string>,
+      trimLingerEvents?: boolean,
     },
     postHog?: {
       autocapture?: boolean,

@@ -25,8 +25,16 @@ export class Analytics {
   ) {}
 }
 
-function storeEventToLocalStorage(event: string, properties: any) {
-  const events = JSON.parse(window.localStorage.getItem('GAMALON-events') || '[]');
+function storeEventToLocalStorage(event: string, properties: any, appConfig: AppConfig) {
+  let events = JSON.parse(window.localStorage.getItem('GAMALON-events') || '[]');
+  if (appConfig?.analytics?.pagination?.allowedEvents) {
+    if (!appConfig?.analytics?.pagination?.allowedEvents.includes(event)) {
+      return;
+    }
+  }
+  if (appConfig?.analytics?.pagination?.trimLingerEvents && event == 'feed linger metrics') {
+    events = events.filter((e) => e.event !== 'feed linger metrics');
+  }
   events.push({ event, properties });
   window.localStorage.setItem('GAMALON-events', JSON.stringify(events));
 }
@@ -86,6 +94,6 @@ export class RealAnalytics extends Analytics {
       ...this.#globalProps(),
       ...props,
     };
-    storeEventToLocalStorage(event, properties);
+    storeEventToLocalStorage(event, properties, this.#appConfig);
   }
 }

@@ -5,6 +5,8 @@ import { createRoot } from 'react-dom/client';
 import type { AppConfig, DispatchCommand } from './entities';
 import { type Analytics, RealAnalytics } from './analytics';
 import { getDesignConfig, setStorageFlags } from './utils/stateUtils';
+import { appendGridSettings, appendPgStylesheet } from './utils/domUtils';
+
 import App from './App';
 
 // $FlowIgnore
@@ -89,6 +91,18 @@ window.GAMALON.init = async (config: AppConfig): any => {
   if (targetNode) {
     targetNode.appendChild(pgContainer);
     renderApp();
+    if (config.design?.style?.global) {
+      appendPgStylesheet('pg-stylesheet-global', config.design.style.global);
+    }
+    if (config.design?.style?.merchant) {
+      appendPgStylesheet('pg-stylesheet-merchant', config.design.style.merchant);
+    }
+    if (config.design?.style?.layout) {
+      appendPgStylesheet('pg-stylesheet-layout', config.design.style.layout);
+    }
+    if (config.design?.style?.grid?.enabled) {
+      appendGridSettings('pg-stylesheet-grid', config.design.style.grid);
+    }
   }
 };
 

@@ -43,8 +43,26 @@
           enabled: true,
         },
       },
-      analytics: { disableAll: true },
+      analytics: {
+        disableAll: false,
+        pagination: {
+          includeEvents: true,
+          trimLingerEvents: true,
+          allowedEvents: ["feed linger metrics"]
+        },
+      },
       design: {
+        style: {
+          grid: {
+            enabled: true,
+            mobile: {
+              columns: 1,
+            },
+            desktop: {
+              columns: 1,
+            },
+          },
+        },
         tracking: {
           feed: {
             enabled: true,
@@ -56,6 +74,9 @@
             thresholds: [0.3, 0.7],
           },
         },
+        pagination: {
+          enabled: true,
+        }
       }
     });
   </script>
