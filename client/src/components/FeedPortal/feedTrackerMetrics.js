@@ -6,12 +6,29 @@ import type {
   MetricConstructor,
 } from '../../entities';
 
+function generateHeatMapColor(index: number, length: number) {
+  // Generate a color from blue to red based on the index and total length
+  if (length <= 1) return '#ff0000';
+
+  const startColor = { r: 0, g: 0, b: 255 };
+  const endColor = { r: 255, g: 0, b: 0 };
+  const ratio = index / (length - 1);
+
+  const r = Math.round(startColor.r + ratio * (endColor.r - startColor.r));
+  const g = Math.round(startColor.g + ratio * (endColor.g - startColor.g));
+  const b = Math.round(startColor.b + ratio * (endColor.b - startColor.b));
+
+  return `#${[r, g, b].map((x) => x.toString(16).padStart(2, '0')).join('')}`;
+}
+
 export default class FeedMetricsController {
+  feedObserver: IntersectionObserver | null;
   enabled: boolean;
   durations: Map<string, MetricDuration>;
   intervalRef: any;
   thresholds: Array<number>;
   heatmap: boolean;
+  color_heatmap: boolean;
   interval: number;
   pageVisibe: boolean;
   onUpdate: (
@@ -20,26 +37,39 @@ export default class FeedMetricsController {
   ) => void;
 
   constructor() {
+    this.feedObserver = null;
     this.enabled = false;
     this.durations = new Map();
     this.intervalRef = null;
     this.pageVisibe = true;
     this.thresholds = [0.3, 0.7];
     this.heatmap = false;
+    this.color_heatmap = false;
     this.interval = 10000;
     this.onUpdate = () => {};
   }
 
-  setupIntersectionObserver(config: MetricConstructor) {
+  setupIntersectionObserver(config: MetricConstructor): IntersectionObserver | null {
     if (!this.enabled && config.enabled) {
+      this.feedObserver = new IntersectionObserver(
+        (entries: Array<IntersectionObserverEntry>) => {
+          this.trackIntersectionEntries(entries);
+        },
+        {
+          root: null,
+          threshold: config.thresholds,
+        },
+      );
       this.enabled = config.enabled;
       this.thresholds = config.thresholds;
       this.heatmap = config.heatmap;
+      this.color_heatmap = config.color_heatmap;
       this.interval = config.interval;
       this.onUpdate = config.onUpdate;
       this.trackPageVisibility();
       this.trackIntersectionPing();
     }
+    return this.feedObserver;
   }
 
   updateTargetElement(key: string) {
@@ -51,6 +81,25 @@ export default class FeedMetricsController {
       const { target, totalTime } = duration;
       if (target) {
         target.setAttribute('data-time', totalTime.toFixed(2));
+      }
+    }
+  }
+
+  updateTargetElementColor(key: string, index: number, total: number) {
+    const duration: ?MetricDuration = this.durations.get(key);
+    if (duration) {
+      const { target } = duration;
+      if (target) {
+        const color = generateHeatMapColor(index, total);
+        const cardWrapperContent = target.querySelector('.card-wrapper-content');
+        const cardWrapperProduct = target.querySelector('.pg-card-product');
+
+        if (cardWrapperContent) {
+          cardWrapperContent.setAttribute('style', `background-color: ${color} !important;`);
+        }
+        if (cardWrapperProduct) {
+          cardWrapperProduct.setAttribute('style', `background-color: ${color} !important;`);
+        }
       }
     }
   }
@@ -134,6 +183,15 @@ export default class FeedMetricsController {
             this.updateTargetElement(key);
           }
         });
+
+        if (this.color_heatmap) {
+          const sortedDurations = Array.from(this.durations.entries()).sort(
+            ([, a], [, b]) => b.totalTime - a.totalTime,
+          );
+          sortedDurations.forEach(([key], index) => {
+            this.updateTargetElementColor(key, index, sortedDurations.length);
+          });
+        }
         this.onUpdate(this.durations, 'ping');
       }, this.interval);
     }

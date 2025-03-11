@@ -59,11 +59,6 @@ function CardWrapper({
     if (!isMetaCard(card) && cardRef.current && addTrackingRef) {
       addTrackingRef(card, cardRef.current);
     }
-    return () => {
-      if (!isMetaCard(card) && removeTrackingRef) {
-        removeTrackingRef(card.render_key);
-      }
-    };
   }, [addTrackingRef, removeTrackingRef, card]);
 
   return (
