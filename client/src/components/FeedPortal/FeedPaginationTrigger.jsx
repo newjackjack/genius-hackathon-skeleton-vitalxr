@@ -16,18 +16,16 @@ export default function FeedPaginationTrigger({
   useLayoutEffect(() => {
     let paginationObserver = null;
     const { current: element } = paginationEl;
-    if (element && pagination.enabled) {
-      if (pagination.offset) {
-        const parent = element.parentElement;
-        if (parent) {
-          const resizeObserver = new ResizeObserver((entries) => {
-            for (const entry of entries) {
-              const { scrollHeight } = entry.target;
-              element.style.transform = `translateY(-${scrollHeight * (1 - pagination.offset)}px)`;
-            }
-          });
-          resizeObserver.observe(parent);
-        }
+    if (element && pagination.enabled && pagination.offset) {
+      const parent = element.parentElement;
+      if (parent) {
+        const resizeObserver = new ResizeObserver((entries) => {
+          for (const entry of entries) {
+            const { scrollHeight } = entry.target;
+            element.style.transform = `translateY(-${scrollHeight * (1 - pagination.offset)}px)`;
+          }
+        });
+        resizeObserver.observe(parent);
       }
       paginationObserver = new IntersectionObserver(
         (entries) => {

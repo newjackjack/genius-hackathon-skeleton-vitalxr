@@ -4,14 +4,12 @@
 import React, {
   useRef,
   useCallback,
-  useLayoutEffect,
   useContext,
   useEffect,
 } from 'react';
 import type { Node } from 'react';
 import { produce } from 'immer';
 
-import { trackIntersection } from './feedTrackerUtils';
 import FeedMetricsController, { getMetricsEventPayload } from './feedTrackerMetrics';
 
 import { ConfigContext, DesignContext } from '../../context';
@@ -47,46 +45,22 @@ function useIntersectionObserver(
   metrics: {
     enabled: boolean,
     heatmap: boolean,
+    color_heatmap: boolean,
     interval: number,
   },
   thresholds: Array<number>,
   feedTracker: FeedTracker,
 ) {
-  if (!enabled || thresholds.length === 0) {
-    return {
-      feedObserver: null,
-    };
+  if (!enabled || !metrics.enabled || thresholds.length === 0) {
+    return null;
   }
-  if (metrics.enabled) {
-    feedMetricsController.setupIntersectionObserver({
-      ...metrics,
-      thresholds,
-      onUpdate: (metricData, type) => {
-        const payload = getMetricsEventPayload(metricData, feedTracker, type);
-        feedTracker.current.analytics.track('feed linger metrics', payload);
-      },
-    });
-  }
-  const intersectionCallback = (entries: Array<IntersectionObserverEntry>) => {
-    feedMetricsController.trackIntersectionEntries(entries);
-    if (!metrics.enabled) {
-      entries.forEach((entry) => {
-        trackIntersection({
-          intersection: entry,
-          feedTracker,
-          thresholds,
-        });
-      });
-    }
-  };
-
-  const feedObserver = new IntersectionObserver(intersectionCallback, {
-    root: null,
-    rootMargin: '0px',
-    threshold: thresholds,
-  });
-  return Object.freeze({
-    feedObserver,
+  return feedMetricsController.setupIntersectionObserver({
+    ...metrics,
+    thresholds,
+    onUpdate: (metricData, type) => {
+      const payload = getMetricsEventPayload(metricData, feedTracker, type);
+      feedTracker.current.analytics.track('feed linger metrics', payload);
+    },
   });
 }
 
@@ -103,15 +77,11 @@ export function FeedCardTracker({
   const feedTracker = useRef({
     analytics,
     feedTargets: new Map<string, { element: HTMLElement, card: FeedCard }>(),
-    feedDurations: new Map<string, { intersectionRatio: number, viewStartTimestamp: number}>(),
-    feedInView: new Set<string>(),
   });
-  const { feedObserver } = useIntersectionObserver(enabled, metrics, thresholds, feedTracker);
+  const feedObserver = useIntersectionObserver(enabled, metrics, thresholds, feedTracker);
 
   const removeTrackingRef = useCallback((cardId: string) => {
-    const { feedTargets, feedDurations, feedInView } = feedTracker.current;
-    feedDurations.delete(cardId);
-    feedInView.delete(cardId);
+    const { feedTargets } = feedTracker.current;
     const cardEntry = feedTargets.get(cardId);
     if (cardEntry) {
       const { element } = cardEntry;
@@ -124,8 +94,8 @@ export function FeedCardTracker({
 
   const setTrackingRef = useCallback(
     (card: FeedCard, element: HTMLElement | null) => {
-      const { feedTargets } = feedTracker.current;
       if (element) {
+        const { feedTargets } = feedTracker.current;
         if (!feedTargets.has(card.render_key)) {
           feedTargets.set(card.render_key, { element, card });
           if (feedObserver) {
@@ -138,12 +108,6 @@ export function FeedCardTracker({
     },
     [removeTrackingRef, feedObserver],
   );
-
-  useLayoutEffect(() => () => {
-    if (feedObserver) {
-      feedObserver.disconnect();
-    }
-  }, [feedObserver, thresholds, enabled]);
 
   if (enabled) {
     const value = produce(trackingState, (draftState) => {

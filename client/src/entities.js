@@ -1221,6 +1221,7 @@ export type AppConfig = {
         metrics?: {
           enabled?: boolean,
           heatmap?: boolean,
+          color_heatmap?: boolean,
           interval?: number,
         },
         thresholds?: Array<number>,
@@ -1331,6 +1332,7 @@ export type AppDesignProps = {
       metrics: {
         enabled: boolean,
         heatmap: boolean,
+        color_heatmap: boolean,
         interval: number,
       },
       thresholds: Array<number>,
@@ -1455,8 +1457,6 @@ export type FeedTracker = {
   current: {
     analytics: Analytics,
     feedTargets: FeedTargets,
-    feedDurations: FeedDurations,
-    feedInView: FeedInView,
   },
 };
 
@@ -1472,6 +1472,7 @@ export type MetricConstructor = {
   enabled: boolean,
   thresholds: Array<number>,
   heatmap: boolean,
+  color_heatmap: boolean,
   interval: number,
   onUpdate: (
     durations: Map<string, MetricDuration>,

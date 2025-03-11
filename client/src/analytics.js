@@ -32,7 +32,7 @@ function storeEventToLocalStorage(event: string, properties: any, appConfig: App
       return;
     }
   }
-  if (appConfig?.analytics?.pagination?.trimLingerEvents && event == 'feed linger metrics') {
+  if (appConfig?.analytics?.pagination?.trimLingerEvents && event === 'feed linger metrics') {
     events = events.filter((e) => e.event !== 'feed linger metrics');
   }
   events.push({ event, properties });

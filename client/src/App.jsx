@@ -29,7 +29,13 @@ function ProductGenius(props: AppProps): Node {
           <LazyMotion features={domAnimation}>
             <AppViewEmbedded />
             <button
-              style={{ position: 'fixed', bottom: 0, right: 0, zIndex: 1000000 }}
+              type="button"
+              style={{
+                position: 'fixed',
+                bottom: 0,
+                right: 0,
+                zIndex: 1000000,
+              }}
               onClick={() => {
                 localStorage.clear();
                 window.location.reload();

@@ -8,6 +8,7 @@ import { getServerUrl } from '../utils';
 export class FeedCardController extends ChatController {
   #serverUrlBase: string;
   #status: { state: string };
+  authHeader: string;
   pagination: { page: number, status: string, empty: boolean };
 
   constructor(
@@ -31,8 +32,8 @@ export class FeedCardController extends ChatController {
     );
   }
 
-  get authHeader(): string {
-    return 'Basic ' + btoa(`${window.GAMALON.username}:${window.GAMALON.password}`);
+  static get authHeader(): string {
+    return `Basic ${btoa(`${window.GAMALON.username}:${window.GAMALON.password}`)}`;
   }
 
   get status(): { state: string } {
@@ -58,9 +59,9 @@ export class FeedCardController extends ChatController {
       const events = JSON.parse(localStorage.getItem('GAMALON-events') || '[]');
       fetch(this.serverURL, {
         method: 'POST',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
-          'Authorization': this.authHeader
+          Authorization: this.authHeader,
         },
         body: JSON.stringify({
           page: this.pagination.page,
@@ -110,7 +111,7 @@ export class FeedCardController extends ChatController {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': this.authHeader
+            Authorization: this.authHeader,
           },
           body: JSON.stringify({
             page: 1,
@@ -124,6 +125,7 @@ export class FeedCardController extends ChatController {
               console.log(payload.cards);
               this.callbacks.botMessage({
                 type: 'bot_message',
+                id: uuid(),
                 cards: payload.cards,
               });
               this.#status.state = 'loaded';
@@ -142,9 +144,9 @@ export class FeedCardController extends ChatController {
     this.callbacks.visitorMessage(message);
     fetch(this.serverURL, {
       method: 'POST',
-      headers: { 
+      headers: {
         'Content-Type': 'application/json',
-        'Authorization': this.authHeader
+        Authorization: this.authHeader,
       },
       body: JSON.stringify(message),
     })

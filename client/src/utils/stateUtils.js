@@ -143,6 +143,7 @@ export const defaultDesign: AppDesignProps = {
       metrics: {
         enabled: false,
         heatmap: false,
+        color_heatmap: false,
         interval: 5000,
       },
       thresholds: [0.3, 0.7],
@@ -312,6 +313,9 @@ export function getDesignConfig(config: AppConfig): AppDesignProps {
           heatmap:
             design?.tracking?.feed?.metrics?.heatmap
             ?? draftState.tracking.feed.metrics.heatmap,
+          color_heatmap:
+            design?.tracking?.feed?.metrics?.color_heatmap
+            ?? draftState.tracking.feed.metrics.color_heatmap,
           interval:
             design?.tracking?.feed?.metrics?.interval
             || draftState.tracking.feed.metrics.interval,
