@@ -8,7 +8,6 @@ import { getServerUrl } from '../utils';
 export class FeedCardController extends ChatController {
   #serverUrlBase: string;
   #status: { state: string };
-  authHeader: string;
   pagination: { page: number, status: string, empty: boolean };
 
   constructor(
@@ -32,8 +31,8 @@ export class FeedCardController extends ChatController {
     );
   }
 
-  static get authHeader(): string {
-    return `Basic ${btoa(`${window.GAMALON.username}:${window.GAMALON.password}`)}`;
+  get authHeader(): string {
+    return `Bearer ${window.GAMALON.access_token}`;
   }
 
   get status(): { state: string } {

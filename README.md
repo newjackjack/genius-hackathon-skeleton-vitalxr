@@ -14,8 +14,7 @@ Front-end app for [FacetChat](https://github.com/gamalon/facetchat) created via 
 ```
   GAMALON.init({
     organizationId: '######',                    // The Hackathon project identifier
-    username: '######',                          // Hackathon basic auth username
-    password: '######',                          // Hackathon basic auth password
+    access_token: '######',                      // Hackathon basic auth username
   });
 ```
 [Type defenitions](https://github.com/gamalon/genius-hackathon-skeleton/blob/main/client/src/entities.js#L981-L1122) for the front-end configuration object
