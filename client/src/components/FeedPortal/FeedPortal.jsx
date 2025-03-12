@@ -202,6 +202,11 @@ function FeedPortal({ state, controller }: FeedPortalProps): Node {
         messageId: feed.feedId,
         feedCard: JSON.parse(JSON.stringify(feedCard)),
       });
+      window.dispatchEvent(
+        new CustomEvent('pg-feed-event', {
+          detail: { type: 'reset-pagination-state' },
+        }),
+      );
       controller.sendVisitorMessage(payload, 'input');
     }
   };
