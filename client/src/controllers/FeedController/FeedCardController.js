@@ -41,7 +41,11 @@ export class FeedCardController extends ChatController {
 
   initFeedEvents(): void {
     const handleFeedEvent = (event: CustomEvent) => {
-      if (event.detail.type === 'pg-next-page') {
+      if (event.detail.type === 'reset-pagination-state') {
+        this.pagination.page = 1;
+        this.pagination.status = 'loaded';
+        this.pagination.empty = false;
+      } else if (event.detail.type === 'pg-next-page') {
         this.paginate();
       }
     };
