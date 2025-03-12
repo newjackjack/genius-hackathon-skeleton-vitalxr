@@ -246,13 +246,11 @@ type MetricsEventPayload = {
 
 type MetricsEventResponse = {
   payload: MetricsEventPayload,
-  event_type: 'action' | 'ping',
 };
 
 export function getMetricsEventPayload(
   durations: Map<string, MetricDuration>,
   feedTracker: FeedTracker,
-  type: 'action' | 'ping',
 ): MetricsEventResponse {
   const payload: MetricsEventPayload = {};
   durations.forEach((duration: MetricDuration, key: string) => {
@@ -264,31 +262,10 @@ export function getMetricsEventPayload(
         id: entry.card.id,
         type: entry.card.type,
         enter_count: viewportEnterCount,
-        product_recommendation_type: entry.card.product_recommendation_type,
-        related_card_id: entry.card.related_card_id,
       };
-      if (entry.card.type === 'product_detail_card' && entry.card.product) {
-        payload[key].product = {
-          handle: entry.card.product.handle,
-          product_id: entry.card.product.product_id,
-          variant_id: entry.card.product.variant_id,
-          product_metadata: entry.card.product.product_metadata,
-        };
-      } else if (entry.card.type === 'variant_group_card') {
-        const varaintData = getVariantData(entry.card);
-        if (varaintData && varaintData.variantProduct) {
-          payload[key].product = {
-            handle: varaintData.variantProduct.handle,
-            product_id: varaintData.variantProduct.product_id,
-            variant_id: varaintData.variantProduct.variant_id,
-            product_metadata: varaintData.variantProduct.product_metadata,
-          };
-        }
-      }
     }
   });
   return {
     payload,
-    event_type: type,
   };
 }
