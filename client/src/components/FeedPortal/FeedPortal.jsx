@@ -205,7 +205,7 @@ function FeedPortal({ state, controller }: FeedPortalProps): Node {
       window.dispatchEvent(
         new CustomEvent('pg-feed-event', {
           detail: { type: 'reset-pagination-state' },
-        })
+        }),
       );
       controller.sendVisitorMessage(payload, 'input');
     }
