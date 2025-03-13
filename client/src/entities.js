@@ -782,21 +782,6 @@ export type CallToActionCartBuyNow = {
   product: Product,
 };
 
-export type CallToActionCartRemove = {
-  type: 'remove_from_cart',
-  product: Product,
-};
-
-export type CallToActionCartIncrement = {
-  type: 'increment_cart_item',
-  product: Product,
-};
-
-export type CallToActionCartDecrement = {
-  type: 'decrement_cart_item',
-  product: Product,
-};
-
 export type CallToActionClear = {
   type: 'clear_action_calls',
 };
@@ -819,9 +804,6 @@ export type CallToActionInteractiveMessage = {
 export type CallToAction =
   | CallToActionCartAdd
   | CallToActionCartBuyNow
-  | CallToActionCartRemove
-  | CallToActionCartIncrement
-  | CallToActionCartDecrement
   | CallToActionClear
   | CallToActionCouponAdd
   | CallToActionCouponRemove
@@ -831,15 +813,6 @@ export type AddToCartCB = (
   product: Product,
   action?: 'cart' | 'buy-now'
 ) => void | Promise<void>;
-
-export type CartEntryPG = {
-  item: Product,
-  quantity: number,
-};
-
-export type CartDataPG = {
-  [string | number]: CartEntryPG,
-};
 
 export type ProductConfig = {
   enableRating: boolean,
@@ -1049,6 +1022,7 @@ export type AppGridConfig = {
 
 export type AppConfig = {
   organizationId: string,
+  access_token: string,
   serverURL: string,
   enabled: boolean,
   experiment?: string, // PostHog experiment name
@@ -1328,8 +1302,6 @@ export type AppFeedState = {
   feed: CardFeedState,
   loading: boolean,
   pagination: boolean,
-  actionCalls: Array<CallToAction>,
-  cart: CartDataPG,
 };
 
 export type CardTimestampData = {

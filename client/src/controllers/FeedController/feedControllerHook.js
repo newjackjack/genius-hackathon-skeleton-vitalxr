@@ -5,27 +5,19 @@ import {
   useMemo,
 } from 'react';
 
-import type {
-  AppFeedState,
-  CallToAction,
-  ServerBehavior,
-} from '../../entities';
+import type { AppFeedState, ServerBehavior } from '../../entities';
+
 import feedControllerReducer from './feedControllerReducer';
 import { Analytics } from '../../analytics';
 import { ChatController } from '../../ChatController';
 import { FeedCardController } from './FeedCardController';
-import safeLocalStorage from '../../utils/safeLocalStorage';
 
 const getInitialState = (): AppFeedState => ({
-  actionCalls: [],
   feed: {
     feedId: '',
     feedSource: '',
     feedCards: [],
   },
-  cart: JSON.parse(
-    safeLocalStorage.getItem('GAMALON-pg-cart-products') || '{}',
-  ),
   loading: true,
   pagination: false,
 });
@@ -56,17 +48,10 @@ export function useCardFeedController({
   const [state, dispatch] = useReducer(feedControllerReducer, getInitialState());
   const initControllerCallbacks = useCallback((instance: ChatController) => {
     instance.on('visitorMessage', () => {
-      dispatch({ type: 'getFeedCards' });
+      dispatch({ type: 'toggleLoading', loading: true });
     });
     instance.on('loading', (loading) => {
       dispatch({ type: 'toggleLoading', loading });
-    });
-    instance.on('callToAction', (actionCall: CallToAction) => {
-      if (actionCall.type === 'clear_action_calls') {
-        dispatch({ type: 'clearActionCalls' });
-        return;
-      }
-      dispatch({ type: 'addActionCall', actionCall });
     });
     instance.on('botMessage', (message) => {
       if (message.type === 'bot_message_pagination') {
@@ -81,13 +66,6 @@ export function useCardFeedController({
           feedId: message.id,
           feedSource: message.cards[0]?.source_id,
         });
-      }
-    });
-    instance.on('callToAction', (actionCall: CallToAction) => {
-      if (actionCall.type === 'clear_action_calls') {
-        dispatch({ type: 'clearActionCalls' });
-      } else {
-        dispatch({ type: 'addActionCall', actionCall });
       }
     });
     instance.on('pagination', (loading) => {

@@ -18,44 +18,8 @@ export default produce((draft: AppFeedState, action) => {
       };
       break;
     }
-    case 'getFeedCards':
-      draft.loading = true;
-      break;
     case 'toggleLoading':
       draft.loading = action.loading;
-      break;
-    case 'addActionCall':
-      if (action.actionCall.type === 'add_to_cart') {
-        const cartEntry = draft.cart[action.actionCall.product.variant_id];
-        if (cartEntry) {
-          cartEntry.quantity += 1;
-        } else {
-          draft.cart[action.actionCall.product.variant_id] = {
-            item: action.actionCall.product,
-            quantity: 1,
-          };
-        }
-      } else if (action.actionCall.type === 'remove_from_cart') {
-        delete draft.cart[action.actionCall.product.variant_id];
-      } else if (action.actionCall.type === 'increment_cart_item') {
-        const cartEntry = draft.cart[action.actionCall.product.variant_id];
-        if (cartEntry) {
-          cartEntry.quantity += 1;
-        }
-      } else if (action.actionCall.type === 'decrement_cart_item') {
-        const cartEntry = draft.cart[action.actionCall.product.variant_id];
-        if (cartEntry) {
-          if (cartEntry.quantity === 1) {
-            delete draft.cart[action.actionCall.product.variant_id];
-          } else {
-            cartEntry.quantity -= 1;
-          }
-        }
-      }
-      draft.actionCalls.push(action.actionCall);
-      break;
-    case 'clearActionCalls':
-      draft.actionCalls = [];
       break;
     case 'togglePagination':
       draft.pagination = action.loading;
