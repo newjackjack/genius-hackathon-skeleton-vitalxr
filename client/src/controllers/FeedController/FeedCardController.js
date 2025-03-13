@@ -5,6 +5,9 @@ import { ChatController } from '../../ChatController';
 import { Analytics } from '../../analytics';
 import { getServerUrl } from '../utils';
 
+function authHeader(): string {
+  return `Bearer ${window.GAMALON.access_token}`;
+}
 export class FeedCardController extends ChatController {
   #serverUrlBase: string;
   #status: { state: string };
@@ -29,10 +32,6 @@ export class FeedCardController extends ChatController {
       this.organizationId,
       this.sessionId,
     );
-  }
-
-  get authHeader(): string {
-    return `Bearer ${window.GAMALON.access_token}`;
   }
 
   get status(): { state: string } {
@@ -64,7 +63,7 @@ export class FeedCardController extends ChatController {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: this.authHeader,
+          Authorization: authHeader(),
         },
         body: JSON.stringify({
           page: this.pagination.page,
@@ -114,7 +113,7 @@ export class FeedCardController extends ChatController {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: this.authHeader,
+            Authorization: authHeader(),
           },
           body: JSON.stringify({
             page: 1,
@@ -149,7 +148,7 @@ export class FeedCardController extends ChatController {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: this.authHeader,
+        Authorization: authHeader(),
       },
       body: JSON.stringify(message),
     })

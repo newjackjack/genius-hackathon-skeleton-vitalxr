@@ -103,8 +103,6 @@ export type ServerBehavior = {
 };
 
 export type AppConfigFlags = {
-  contextInitialState: boolean,
-  lingerCards: boolean,
   sourcePDP: boolean,
 };
 
@@ -731,13 +729,6 @@ export type BotToVisitorMessage = {
   cards?: Array<FeedCard>,
 };
 
-export type BotLingerMessage = {
-  type: 'bot_linger_message',
-  id: string,
-  product_ids: Array<string | number>,
-  cards: Array<FeedCard>,
-};
-
 export type BotPaginationMessage = {
   type: 'bot_message_pagination',
   cards: Array<FeedCard>,
@@ -746,7 +737,6 @@ export type BotPaginationMessage = {
 export type BotMessage =
   | BotToVisitorMessage
   | BotPaginationMessage
-  | BotLingerMessage;
 
 // Visitor messsages
 export type VisitorTextMessage = {|
@@ -759,14 +749,6 @@ export type VisitorTextMessage = {|
     message_id?: string,
     card_id: string,
   },
-|};
-
-export type VisitorNewSession = {|
-  type: 'visitor_new_session',
-  id: string,
-  server_behavior?: ServerBehavior,
-  current_url?: string,
-  session_source?: 'closed' | 'expanded',
 |};
 
 export type InteractionSource = {
@@ -785,19 +767,7 @@ export type VisitorButtonClick = {|
   current_url?: string,
 |};
 
-export type VisitorLingerRequest = {|
-  type: 'visitor_linger_request',
-  id: string,
-  product_ids: Array<string | number>,
-  server_behavior?: ServerBehavior,
-  current_url?: string,
-|};
-
-export type VisitorMessage =
-  | VisitorTextMessage
-  | VisitorButtonClick
-  | VisitorNewSession
-  | VisitorLingerRequest;
+export type VisitorMessage = VisitorTextMessage | VisitorButtonClick;
 
 export type ThreadMessage = BotMessage | VisitorMessage;
 
@@ -1120,8 +1090,6 @@ export type AppConfig = {
       grid?: AppGridConfig,
     },
     flags?: {
-      contextInitialState?: boolean,
-      lingerCards?: boolean,
       sourcePDP?: boolean,
     },
     container?: {
@@ -1178,9 +1146,6 @@ export type AppConfig = {
         },
       },
       menu?: {
-        visible?: boolean,
-      },
-      sorting?: {
         visible?: boolean,
       },
     },
@@ -1294,9 +1259,6 @@ export type AppDesignProps = {
     menu: {
       visible: boolean,
     },
-    sorting: {
-      visible: boolean,
-    },
   },
   url: {
     redirect: boolean,
@@ -1356,40 +1318,16 @@ export type ContextConfigProps = {|
   serverBehavior: ServerBehavior,
 |};
 
-export type FeedOverlay = {
-  cart?: {
-    visible: boolean,
-  },
-};
-
-export type FeedSortOption =
-  | 'best-selling'
-  | 'newest-to-oldest'
-  | 'oldest-to-newest'
-  | 'price-low-to-high'
-  | 'price-high-to-low'
-  | 'featured'
-  | 'a-to-z'
-  | 'z-to-a';
-
 export type CardFeedState = {
   feedId: string,
   feedSource: string,
-  feedSort: FeedSortOption,
   feedCards: Array<FeedCard>,
-};
-
-export type LingerFeedState = {
-  cards: Array<FeedCard>,
-  productIds: Array<number | string>,
 };
 
 export type AppFeedState = {
   feed: CardFeedState,
-  lingerCards: LingerFeedState,
   loading: boolean,
   pagination: boolean,
-  overlay: FeedOverlay,
   actionCalls: Array<CallToAction>,
   cart: CartDataPG,
 };

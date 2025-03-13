@@ -4,9 +4,6 @@ import type { AppFeedState } from '../../entities';
 
 export default produce((draft: AppFeedState, action) => {
   switch (action.type) {
-    case 'setFeedSort':
-      draft.feed.feedSort = action.option;
-      break;
     case 'addFeedCards': {
       draft.pagination = false;
       draft.feed.feedCards = draft.feed.feedCards.concat(action.feedCards);
@@ -15,23 +12,14 @@ export default produce((draft: AppFeedState, action) => {
     case 'setFeedCards': {
       draft.loading = false;
       draft.feed = {
-        feedSort: draft.feed.feedSort,
         feedCards: action.feedCards,
         feedId: action.feedId,
         feedSource: action.feedSource,
       };
       break;
     }
-    case 'setLingerCards':
-      draft.lingerCards.cards = action.cards;
-      draft.lingerCards.productIds = action.productIds;
-      draft.loading = false;
-      break;
     case 'getFeedCards':
       draft.loading = true;
-      break;
-    case 'setOverlay':
-      draft.overlay = action.overlay;
       break;
     case 'toggleLoading':
       draft.loading = action.loading;

@@ -6,7 +6,6 @@ import type {
   VisitorMessage,
   ServerBehavior,
   CallToAction,
-  FeedSortOption,
 } from './entities';
 import { Analytics } from './analytics';
 import safeLocalStorage from './utils/safeLocalStorage';
@@ -29,20 +28,16 @@ export type ThreadMessages = Array<ThreadMessage>;
 
 export type ChatControllerCallbackTypes =
   | 'loading'
-  | 'overlay'
   | 'visitorMessage'
   | 'botMessage'
   | 'callToAction'
-  | 'sortFeed'
   | 'pagination'
 
 export type ChatControllerCallbacks = {
   loading: (boolean) => void,
-  overlay: (any) => void,
   visitorMessage: (ThreadMessage) => void,
   botMessage: (ThreadMessage, any) => void,
   callToAction: (action: CallToAction) => void,
-  sortFeed: (option: FeedSortOption) => void,
   pagination: (boolean) => void,
 };
 
@@ -54,8 +49,7 @@ export type VisitorAction =
   | 'tag remove' // Visitor clicked a "tag" button
   | 'reconnect'
   | 'expand button' // Visitor clicked the button that toggles the expanded state
-  | 'external event'
-  | 'linger event';
+  | 'external event';
 
 /**
  * This is an abstract interface for a chat communication channel. There are
@@ -117,11 +111,9 @@ export class ChatController {
     this.#organizationId = organizationId;
     this.#callbacks = {
       loading: emptyCallback,
-      overlay: emptyCallback,
       visitorMessage: emptyCallback,
       botMessage: emptyCallback,
       callToAction: emptyCallback,
-      sortFeed: emptyCallback,
       pagination: emptyCallback,
     };
     this.#serverBehavior = serverBehavior;

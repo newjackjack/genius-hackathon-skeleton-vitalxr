@@ -9,7 +9,6 @@ import type {
   AppFeedState,
   CallToAction,
   ServerBehavior,
-  FeedSortOption,
 } from '../../entities';
 import feedControllerReducer from './feedControllerReducer';
 import { Analytics } from '../../analytics';
@@ -19,17 +18,11 @@ import safeLocalStorage from '../../utils/safeLocalStorage';
 
 const getInitialState = (): AppFeedState => ({
   actionCalls: [],
-  lingerCards: {
-    cards: [],
-    productIds: [],
-  },
   feed: {
     feedId: '',
     feedSource: '',
-    feedSort: 'featured',
     feedCards: [],
   },
-  overlay: {},
   cart: JSON.parse(
     safeLocalStorage.getItem('GAMALON-pg-cart-products') || '{}',
   ),
@@ -62,12 +55,8 @@ export function useCardFeedController({
 }: UseCardFeedControllerProps): UseCardFeedControllerReturn {
   const [state, dispatch] = useReducer(feedControllerReducer, getInitialState());
   const initControllerCallbacks = useCallback((instance: ChatController) => {
-    instance.on('visitorMessage', (message) => {
-      if (message.type === 'visitor_linger_request') {
-        dispatch({ type: 'getLingerCards' });
-      } else {
-        dispatch({ type: 'getFeedCards' });
-      }
+    instance.on('visitorMessage', () => {
+      dispatch({ type: 'getFeedCards' });
     });
     instance.on('loading', (loading) => {
       dispatch({ type: 'toggleLoading', loading });
@@ -85,8 +74,7 @@ export function useCardFeedController({
           type: 'addFeedCards',
           feedCards: message.cards,
         });
-      }
-      if (message.type === 'bot_message' && message.cards) {
+      } else if (message.type === 'bot_message' && message.cards) {
         dispatch({
           type: 'setFeedCards',
           feedCards: message.cards,
@@ -94,16 +82,6 @@ export function useCardFeedController({
           feedSource: message.cards[0]?.source_id,
         });
       }
-      if (message.type === 'bot_linger_message' && message.cards) {
-        dispatch({
-          type: 'setLingerCards',
-          cards: message.cards,
-          productIds: message.product_ids,
-        });
-      }
-    });
-    instance.on('overlay', (overlay) => {
-      dispatch({ type: 'setOverlay', overlay });
     });
     instance.on('callToAction', (actionCall: CallToAction) => {
       if (actionCall.type === 'clear_action_calls') {
@@ -111,9 +89,6 @@ export function useCardFeedController({
       } else {
         dispatch({ type: 'addActionCall', actionCall });
       }
-    });
-    instance.on('sortFeed', (option: FeedSortOption) => {
-      dispatch({ type: 'setFeedSort', option });
     });
     instance.on('pagination', (loading) => {
       dispatch({ type: 'togglePagination', loading });

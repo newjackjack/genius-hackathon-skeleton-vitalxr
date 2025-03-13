@@ -90,11 +90,6 @@ function AppMenuBar({ state, controller }: AppMenuBarProps): Node {
   const handleOnSelect = (name: string) => {
     if (name === 'cart') {
       controller.callbacks.callToAction({ type: 'clear_action_calls' });
-      controller.callbacks.overlay({
-        cart: {
-          visible: Boolean(!state.overlay.cart?.visible),
-        },
-      });
     } else if (name === 'browse' || name === 'find') {
       if (getActiveMenuState(state.feed, name)) {
         // $FlowIgnore
