@@ -841,12 +841,6 @@ export type CallbackNodeConfig = {
   value?: string,
 };
 
-export type AppPlacementConfig = {
-  pos: 'left' | 'center' | 'right',
-  y: number,
-  x: number,
-};
-
 export type GoogleAnalyticsConfig = {
   enabled?: boolean, // Enables pass-through if gtag is installed on page
   sendTo?: string, // Overrides destination property for events
