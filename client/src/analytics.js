@@ -71,14 +71,12 @@ export class RealAnalytics extends Analytics {
     environment: string,
     visitor_id: string,
     session_id: string,
-    sessionId: string,
     } {
     return {
       organization_id: this.organizationId,
       environment: this.environment,
       visitor_id: this.visitorId,
       session_id: this.sessionId,
-      sessionId: this.sessionId,
     };
   }
 
