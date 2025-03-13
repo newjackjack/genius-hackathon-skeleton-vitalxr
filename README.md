@@ -1,6 +1,8 @@
-# Product Genius feed client app
+# DevCamp Genius Skeleton Client
 
-Front-end app for [FacetChat](https://github.com/gamalon/facetchat) created via `React` and `Webpack` bundler.
+Setting up your DevCamp Genius self-learning feed is a breeze! We've implemented all of the user interaction and event pass-throughs for you, all you need to do is specify the project ID and access token you created.
+
+Make sure to follow [these prerequisite instructions](https://gamalon.github.io/genius-hackathon-documentation/) first.
 
 ### Setup
 
@@ -17,7 +19,7 @@ Front-end app for [FacetChat](https://github.com/gamalon/facetchat) created via 
     access_token: '######',                      // Hackathon basic auth username
   });
 ```
-[Type defenitions](https://github.com/gamalon/genius-hackathon-skeleton/blob/main/client/src/entities.js#L981-L1122) for the front-end configuration object
+[Type definitions](https://github.com/gamalon/genius-hackathon-skeleton/blob/main/client/src/entities.js#L981-L1122) for the front-end configuration object
 
 ### Setting the styling
 
