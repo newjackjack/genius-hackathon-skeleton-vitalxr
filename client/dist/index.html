@@ -34,13 +34,14 @@
     const access_token = '######';  // Replace with your hackathon access token
 
     const defaultDesignSettings = {
+      merchant: '',
       grid: {
         enabled: true,
         mobile: {
           columns: 1,
         },
         desktop: {
-          columns: 1,
+          columns: 2,
         },
       },
     };
@@ -48,6 +49,7 @@
     .then(response => response.json())
     .then(data => {
       const designSettings = data?.design.style || defaultDesignSettings;
+      delete designSettings['global'];
       GAMALON.init({
       container: '#pg-app-wrapper',
       organizationId: project_name,  
@@ -64,13 +66,16 @@
       analytics: {
         disableAll: false,
         pagination: {
-          includeEvents: true,
-          trimLingerEvents: true,
+          includeEvents: true, // Include all the aggregated events (from the previous page) in the pagination request
+          trimLingerEvents: true, // Only save the last linger event for each pagination request
           allowedEvents: ["feed linger metrics"]
         },
       },
       design: {
         style: designSettings,
+        flags: {
+          sourcePDP: true, // If enabled, clicking on a product card will open that product link in a new tab
+        },
         tracking: {
           feed: {
             enabled: true,
@@ -79,7 +84,7 @@
               heatmap: false, // Overlay a duration value on each card
               interval: 5000, // Send a metric aggregate every 5 seconds if the user is idle
             },
-            thresholds: [0.3, 0.7],
+            thresholds: [0.3, 0.7], // intersection ratio thresholds for linger events: if the card is 30% visible, consider it as a linger event
           },
         },
         pagination: {

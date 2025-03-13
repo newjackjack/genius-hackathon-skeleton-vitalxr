@@ -49,8 +49,6 @@ export const defaultDesign: AppDesignProps = {
     style: '',
   },
   flags: {
-    contextInitialState: false,
-    lingerCards: false,
     sourcePDP: false,
   },
   rendering: {
@@ -97,9 +95,6 @@ export const defaultDesign: AppDesignProps = {
       },
     },
     menu: {
-      visible: false,
-    },
-    sorting: {
       visible: false,
     },
   },
@@ -175,10 +170,6 @@ export function getDesignConfig(config: AppConfig): AppDesignProps {
       mode: design?.merchant?.mode || draftState.merchant.mode,
     };
     draftState.flags = {
-      contextInitialState:
-        design?.flags?.contextInitialState ?? draftState.flags.contextInitialState,
-      lingerCards:
-        design?.flags?.lingerCards ?? draftState.flags.lingerCards,
       sourcePDP:
         design?.flags?.sourcePDP ?? draftState.flags.sourcePDP,
     };
@@ -248,9 +239,6 @@ export function getDesignConfig(config: AppConfig): AppDesignProps {
           title: design?.embedded?.filters?.navigation?.title || '',
           options: design?.embedded?.filters?.navigation?.options || [],
         },
-      },
-      sorting: {
-        visible: design?.embedded?.sorting?.visible ?? draftState.embedded.sorting.visible,
       },
       menu: {
         visible: design?.embedded?.menu?.visible ?? draftState.embedded.menu.visible,

@@ -7,8 +7,6 @@ import addToShopifyPDPCart from './cartPDP';
 
 import type {
   Product,
-  CartDataPG,
-  CartEntryPG,
   CallToAction,
   CouponCardInfo,
   CartFlowAction,
@@ -18,9 +16,6 @@ import type {
 const cartTrackingMessageMapping = {
   add_to_cart: 'product added to cart',
   buy_now: 'product directly checked out',
-  remove_from_cart: 'product removed from cart',
-  increment_cart_item: 'incremented cart product',
-  decrement_cart_item: 'decremented cart product',
 };
 
 let appLanguage: ?AppLanguage = null;
@@ -41,9 +36,6 @@ function trackCartProduct(controller: ChatController, action: CallToAction) {
   if (
     action.type === 'add_to_cart'
     || action.type === 'buy_now'
-    || action.type === 'remove_from_cart'
-    || action.type === 'increment_cart_item'
-    || action.type === 'decrement_cart_item'
   ) {
     const { product } = action;
     const {
@@ -178,50 +170,6 @@ export async function addToCartOpenURL(
     type: 'add_to_cart',
     product,
   });
-}
-
-export function updateCartStorage(
-  controller: ChatController,
-  action: CallToAction,
-) {
-  const cartProducts: CartDataPG = JSON.parse(
-    safeLocalStorage.getItem('GAMALON-pg-cart-products') || '{}',
-  );
-  if (action.type === 'add_to_cart') {
-    const { product } = action;
-    const cartEntry = cartProducts[product.variant_id];
-    if (cartEntry) {
-      cartEntry.quantity += 1;
-    } else {
-      cartProducts[product.variant_id] = {
-        item: product,
-        quantity: 1,
-      };
-    }
-  } else if (action.type === 'remove_from_cart') {
-    const { product } = action;
-    delete cartProducts[product.variant_id];
-  } else if (action.type === 'increment_cart_item') {
-    const { product } = action;
-    const cartEntry = cartProducts[product.variant_id];
-    if (cartEntry) {
-      cartEntry.quantity += 1;
-    }
-  } else if (action.type === 'decrement_cart_item') {
-    const { product } = action;
-    const cartEntry = cartProducts[product.variant_id];
-    if (cartEntry) {
-      if (cartEntry.quantity === 1) {
-        delete cartProducts[product.variant_id];
-      } else {
-        cartEntry.quantity -= 1;
-      }
-    }
-  }
-  safeLocalStorage.setItem(
-    'GAMALON-pg-cart-products',
-    JSON.stringify(cartProducts),
-  );
 }
 
 export function extractCouponData(): ?CouponCardInfo {
@@ -382,13 +330,6 @@ export const onCallToActionCart = async (
       }
       controller.callbacks.loading(false);
     }
-  } else if (
-    action.type === 'remove_from_cart'
-    || action.type === 'increment_cart_item'
-    || action.type === 'decrement_cart_item'
-  ) {
-    updateCartStorage(controller, action);
-    updateCartState(controller, action);
   } else if (action.type === 'add_coupon') {
     safeLocalStorage.setItem('GAMALON-pg-cart-coupon', JSON.stringify(action.couponInfo));
     controller.callbacks.callToAction(action);
@@ -431,56 +372,6 @@ export function getQuantityPrice(
     return Math.round(total * 100) / 100;
   }
   return 0;
-}
-
-type ExtractCartDataReturn = {
-  items: Array<CartEntryPG>,
-  itemCount: number,
-  itemTotal: number,
-  itemTotalDiscount: number | null,
-  itemTotalSavings: number,
-  itemTotalFormatted: string,
-  itemTotalDiscountFormatted: string,
-};
-
-export function extractCartData(cart: CartDataPG): ExtractCartDataReturn {
-  const cartItemKeys: Array<string> = Object.keys(cart);
-  const itemTotal = cartItemKeys.reduce((acc, key) => {
-    const entry = cart[key];
-    const { price } = getProductAttributes(
-      entry.item.attributes || entry.item.product_attributes,
-      { priceToLocale: false },
-    );
-    const quantityPrice = getQuantityPrice(price, entry.quantity);
-    if (quantityPrice) {
-      return acc + quantityPrice;
-    }
-    return acc;
-  }, 0);
-  let itemTotalDiscount = null;
-  let itemTotalSavings = 0;
-  if (itemTotal > 0) {
-    const couponData = extractCouponData();
-    if (couponData?.discount) {
-      itemTotalSavings = (itemTotal * couponData.discount) / 100;
-      if (itemTotalSavings > 0) {
-        itemTotalDiscount = itemTotal - itemTotalSavings;
-      }
-    }
-  }
-  return {
-    items: cartItemKeys.map((key) => cart[key]),
-    itemCount: cartItemKeys.length,
-    itemTotal,
-    itemTotalDiscount,
-    itemTotalSavings,
-    itemTotalFormatted: (Math.round(itemTotal * 100) / 100).toLocaleString(
-      'en-US',
-    ),
-    itemTotalDiscountFormatted: itemTotalDiscount
-      ? (Math.round(itemTotalDiscount * 100) / 100).toLocaleString('en-US')
-      : '',
-  };
 }
 
 export function cartButtonTitle(
