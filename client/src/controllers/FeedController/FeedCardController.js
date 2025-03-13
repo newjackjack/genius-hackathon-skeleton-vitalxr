@@ -155,7 +155,11 @@ export class FeedCardController extends ChatController {
       .then((response) => response.json())
       .then((payload) => {
         if (payload) {
-          this.callbacks.botMessage(payload);
+          this.callbacks.botMessage({
+            type: 'bot_message',
+            id: uuid(),
+            cards: payload.cards,
+          });
         }
       })
       .catch((error) => {
