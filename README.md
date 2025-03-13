@@ -14,10 +14,8 @@ Make sure to follow [these prerequisite instructions](https://gamalon.github.io/
 * To run the local instance: `npm start`
 * The configuration for your project can be set under `/dist/index.html`:
 ```
-  GAMALON.init({
-    organizationId: '######',                    // The Hackathon project identifier
-    access_token: '######',                      // Hackathon basic auth username
-  });
+  const project_name = '######';  // Replace with your hackathon project identifier
+  const access_token = '######';  // Replace with your hackathon access token
 ```
 [Type definitions](https://github.com/gamalon/genius-hackathon-skeleton/blob/main/client/src/entities.js#L981-L1122) for the front-end configuration object
 
