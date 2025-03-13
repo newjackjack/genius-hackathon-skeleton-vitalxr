@@ -58,7 +58,7 @@ function useIntersectionObserver(
     ...metrics,
     thresholds,
     onUpdate: (metricData, type) => {
-      const payload = getMetricsEventPayload(metricData, feedTracker);
+      const payload = getMetricsEventPayload(metricData, feedTracker, type);
       feedTracker.current.analytics.track('feed linger metrics', payload);
     },
   });

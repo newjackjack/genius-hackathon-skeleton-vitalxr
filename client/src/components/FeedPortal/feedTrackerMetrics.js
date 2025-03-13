@@ -246,11 +246,13 @@ type MetricsEventPayload = {
 
 type MetricsEventResponse = {
   payload: MetricsEventPayload,
+  event_type: string,
 };
 
 export function getMetricsEventPayload(
   durations: Map<string, MetricDuration>,
   feedTracker: FeedTracker,
+  type: 'action' | 'ping',
 ): MetricsEventResponse {
   const payload: MetricsEventPayload = {};
   durations.forEach((duration: MetricDuration, key: string) => {
@@ -267,5 +269,6 @@ export function getMetricsEventPayload(
   });
   return {
     payload,
+    event_type: type,
   };
 }
