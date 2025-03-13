@@ -1,5 +1,4 @@
 // @flow
-import { getVariantData } from '../../utils/componentUtils';
 import type {
   FeedTracker,
   MetricDuration,
