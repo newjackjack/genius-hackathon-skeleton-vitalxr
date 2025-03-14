@@ -51,6 +51,9 @@ export class FeedCardController extends ChatController {
     window.addEventListener('pg-feed-event', handleFeedEvent);
   }
 
+  /**
+   * Handles the pagination of the feed
+   */
   paginate(): void {
     if (this.pagination.status === 'loaded' && !this.pagination.empty) {
       this.pagination.status = 'loading';
@@ -58,7 +61,11 @@ export class FeedCardController extends ChatController {
       this.#status.state = 'pagination';
       this.callbacks.pagination(true);
 
+      /**
+       * if there are events in local storage, send them to the server
+       */
       const events = JSON.parse(localStorage.getItem('GAMALON-events') || '[]');
+      localStorage.setItem('GAMALON-events', '[]');
       fetch(this.serverURL, {
         method: 'POST',
         headers: {

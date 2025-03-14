@@ -25,13 +25,19 @@ export class Analytics {
   ) {}
 }
 
+/**
+ * Takes an event and stores them in local storage, so it can be passed
+ * down to "paginate" function in FeedCardController.js
+ */
 function storeEventToLocalStorage(event: string, properties: any, appConfig: AppConfig) {
   let events = JSON.parse(window.localStorage.getItem('GAMALON-events') || '[]');
+  // store the allowed events in local storage based on the allowedEvents in appConfig,
   if (appConfig?.analytics?.pagination?.allowedEvents) {
     if (!appConfig?.analytics?.pagination?.allowedEvents.includes(event)) {
       return;
     }
   }
+  // if trimLingerEvents is true, only store the latest feed linger metrics event.
   if (appConfig?.analytics?.pagination?.trimLingerEvents && event === 'feed linger metrics') {
     events = events.filter((e) => e.event !== 'feed linger metrics');
   }
@@ -81,6 +87,7 @@ export class RealAnalytics extends Analytics {
   }
 
   /**
+   * Handle event tracking
    * @param {string} event - Event
    * @param {string} props - Optional event props
    */
