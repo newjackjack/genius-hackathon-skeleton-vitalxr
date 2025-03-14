@@ -248,6 +248,9 @@ type MetricsEventResponse = {
   event_type: string,
 };
 
+/**
+ * Format the linger data and generate the metrics event payload
+ */
 export function getMetricsEventPayload(
   durations: Map<string, MetricDuration>,
   feedTracker: FeedTracker,

@@ -40,6 +40,9 @@ type FeedCardTrackerProps = {
 
 const feedMetricsController = new FeedMetricsController();
 
+/**
+ * Hook to setup an intersection observer to track card visibility.
+ */
 function useIntersectionObserver(
   enabled: boolean,
   metrics: {
@@ -57,7 +60,13 @@ function useIntersectionObserver(
   return feedMetricsController.setupIntersectionObserver({
     ...metrics,
     thresholds,
+    /**
+     * Callback that returns the aggregated metrics data when the card visibility changes.
+     */
     onUpdate: (metricData, type) => {
+      /**
+       * Format the metrics data and dispatch it via analytics class.
+       */
       const payload = getMetricsEventPayload(metricData, feedTracker, type);
       feedTracker.current.analytics.track('feed linger metrics', payload);
     },
@@ -65,8 +74,8 @@ function useIntersectionObserver(
 }
 
 /**
- * Hook for tracking various interaction events, likes of:
- * "card-view duration", "touch event positioning" and the "scroll behaviour".
+ * Feed tracker context provider. Exposes the addTrackingRef function to child card components,
+ * and sets up an intersection observer class to track card visibility.
  */
 export function FeedCardTracker({
   children,
@@ -78,6 +87,11 @@ export function FeedCardTracker({
     analytics,
     feedTargets: new Map<string, { element: HTMLElement, card: FeedCard }>(),
   });
+
+  /**
+  * Initialize the feed observer with the metrics
+  * configuration and pass down the feed card data (feedTracker)
+  */
   const feedObserver = useIntersectionObserver(enabled, metrics, thresholds, feedTracker);
 
   const removeTrackingRef = useCallback((cardId: string) => {
@@ -92,6 +106,10 @@ export function FeedCardTracker({
     }
   }, [feedObserver]);
 
+  /**
+  * Add a tracking reference to the feed tracker
+  * (save the card element and card data in the feedTargets map)
+  */
   const setTrackingRef = useCallback(
     (card: FeedCard, element: HTMLElement | null) => {
       if (element) {

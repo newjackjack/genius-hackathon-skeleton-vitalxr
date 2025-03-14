@@ -56,6 +56,10 @@ function CardWrapper({
   const cardRef = useRef(null);
 
   useLayoutEffect(() => {
+    /**
+     * Add the card data and the element reference to the tracking context
+     * if the card is not a meta card.
+     */
     if (!isMetaCard(card) && cardRef.current && addTrackingRef) {
       addTrackingRef(card, cardRef.current);
     }
